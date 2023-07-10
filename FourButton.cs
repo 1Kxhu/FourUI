@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace FourUI
 {
 
-    //checking if push works
+    //checking if push works v2
     public class FourButton : Button
     {
         private int rippleRadius = 0;
