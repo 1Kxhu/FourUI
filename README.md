@@ -1,7 +1,7 @@
 # Showcase
 [link]
 
-## Key Features
+# Key Features
 - Form Rounding
 - Smooth Form Drag (Never seen before)
 - Custom button, listbox, and panel
