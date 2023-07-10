@@ -1,6 +1,6 @@
-**FourUI: A Modern Winforms Framework**
+##**FourUI: A Modern Winforms Framework**##
 
-## Showcase
+# Showcase
 [link]
 
 ## Key Features
@@ -8,7 +8,7 @@
 - Smooth Form Drag (Never seen before)
 - Custom button, listbox, and panel
 
-## Frequently Asked Questions (FAQ)
+# Frequently Asked Questions (FAQ)
 - **Why choose FourUI?** 
   My design is slick and modern, comparable to WPF.
 - **Is there a virus?** 
