@@ -1,5 +1,3 @@
-##**FourUI: A Modern Winforms Framework**##
-
 # Showcase
 [link]
 
