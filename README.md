@@ -1,6 +1,7 @@
 # Project Name
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 FourUI aims to recreate WPF's smoothness, by applying various tricks and workarounds.
 
 ## Showcase
