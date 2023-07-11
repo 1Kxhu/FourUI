@@ -26,4 +26,4 @@ Absolutely not! FourUI's source code is open to everyone, ensuring transparency 
 FourUI provides highly customizable controls and components, including various animation options.
 
 ### **Why trust FourUI?**
-FourUI is developed by an individual dedicated to leveling up their skills. Transparency and accountability are crucial, and any mistakes made will be acknowledged and rectified.
+FourUI is developed by me (itzkxhu), I want to level up my skills. Transparency and accountability are things I've acknowledged.
