@@ -16,15 +16,15 @@ Check out the [Project Showcase](https://cdn.discordapp.com/attachments/10928467
 
 ## Frequently Asked Questions (FAQ)
 
-- **Why choose FourUI?**
+### **Why choose FourUI?**
   FourUI offers a slick and modern design that can rival WPF's aesthetics.
   
-- **Is there any risk of viruses?**
+### **Is there any risk of viruses?**
   Absolutely not! FourUI's source code is open to everyone, ensuring transparency and trust.
 
-- **How customizable is it?**
+### **How customizable is it?**
   FourUI provides highly customizable controls and components, including various animation options.
 
-- **Why trust FourUI?**
+### **Why trust FourUI?**
   FourUI is developed by an individual dedicated to leveling up their skills. Transparency and accountability are crucial, and any mistakes made will be acknowledged and rectified.
 
