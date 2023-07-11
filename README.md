@@ -4,17 +4,17 @@
 
 FourUI aims to recreate the smoothness of WPF by applying various tricks and workarounds.
 
-## Showcase
+# Showcase
 
 Check out the [Project Showcase](https://cdn.discordapp.com/attachments/1092846734817898656/1128026303254233279/2023-07-10_20-12-25.mp4) to see FourUI in action.
 
-## Key Features
+# Key Features
 
 - Form Rounding: Create rounded forms for a sleek and modern design.
 - Smooth Form Drag: Experience a never-seen smooth dragging functionality.
 - Customizable Components: Customize buttons, listboxes, and panels to fit your application's needs.
 
-## Frequently Asked Questions (FAQ)
+# Frequently Asked Questions (FAQ)
 
 ### **Why choose FourUI?**
 FourUI offers a slick and modern design that can rival WPF's aesthetics.
