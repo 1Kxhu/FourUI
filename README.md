@@ -1,7 +1,7 @@
 # Project Name
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/your-repo.svg)](https://github.com/yourusername/your-repo/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/your-repo.svg)](https://github.com/1Kxhu/FourUI)
 
 A brief description of your project.
 
