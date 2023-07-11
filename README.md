@@ -1,9 +1,7 @@
 # Project Name
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/1Kxhu/FourUI.svg)](https://github.com/1Kxhu/FourUI)
-
-A brief description of your project.
+FourUI aims to recreate WPF's smoothness, by applying various tricks and workarounds.
 
 ## Showcase
 [![Project Showcase](https://cdn.discordapp.com/attachments/1092846734817898656/1128026303254233279/2023-07-10_20-12-25.svg)](https://cdn.discordapp.com/attachments/1092846734817898656/1128026303254233279/2023-07-10_20-12-25.mp4)
