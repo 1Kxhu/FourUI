@@ -17,3 +17,6 @@ FourUI aims to recreate WPF's smoothness, by applying various tricks and workaro
   Nope, the source code is open to everyone!
 - **How customizable is it?** 
   The controls and components are highly customizable, including animations.
+- **Why trust me?** 
+  I'm a person trying to level up their skills.
+  If I ever do anything stupid, cancel me.
