@@ -6,7 +6,7 @@ FourUI aims to recreate the smoothness of WPF by applying various tricks and wor
 
 # Showcase
 
-Check out the [Project Showcase](https://cdn.discordapp.com/attachments/1092846734817898656/1128026303254233279/2023-07-10_20-12-25.mp4) to see FourUI in action.
+I'm too lazy to make one, sorry lol.
 
 # Key Features
 
