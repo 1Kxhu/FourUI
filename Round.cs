@@ -6,12 +6,9 @@ using System.Windows.Forms;
 
 namespace FourUI
 {
-    // A component for creating rounded corners on a Windows Form
     public partial class FourRound : Component
     {
-        private Form targetForm; // The form to apply rounded corners to
-        private int cornerRadius = 10; // The radius of the rounded corners
-
+        private Form targetForm; private int cornerRadius = 10;
         public FourRound()
         {
 
@@ -60,7 +57,6 @@ namespace FourUI
             get { return targetForm; }
             set
             {
-                // Unsubscribe from event handlers of the previous form
                 if (targetForm != null)
                 {
                     targetForm.Load -= TargetForm_Load;
@@ -69,7 +65,6 @@ namespace FourUI
 
                 targetForm = value;
 
-                // Subscribe to event handlers of the new form
                 if (targetForm != null)
                 {
                     targetForm.Load += TargetForm_Load;
@@ -78,7 +73,6 @@ namespace FourUI
             }
         }
 
-        // Event handler for when the target form is loaded
         private void TargetForm_Load(object sender, EventArgs e)
         {
             fillColor = targetForm.BackColor;
@@ -87,29 +81,24 @@ namespace FourUI
 
         Random r = new Random();
 
-        // Event handler for when the target form's background color changes
         private void TargetForm_BackColorChanged(object sender, EventArgs e)
         {
 
-            // Randomly update rounded corners for some variation
             if (r.Next(1, 100) == 1)
                 SetRoundedCorners(targetForm, cornerRadius);
         }
 
         private Color fillColor = Color.White;
 
-        // Method to set the rounded corners for a control
         private void SetRoundedCorners(Control control, int radius)
         {
             fillColor = targetForm.BackColor;
             GraphicsPath path = new GraphicsPath();
 
-            // Subscribe to events related to form resizing
             targetForm.ResizeEnd += TargetForm_BackColorChanged;
             targetForm.Resize += TargetForm_BackColorChanged;
             targetForm.SizeChanged += TargetForm_BackColorChanged;
 
-            // Unsubscribe from events after setting the rounded corners
             targetForm.ResizeEnd -= TargetForm_BackColorChanged;
 
             int diameter = radius;
@@ -123,7 +112,6 @@ namespace FourUI
             Rectangle rectBR = new Rectangle(right - diameter - 1, bottom - diameter - 1, diameter, diameter);
             Rectangle rectBL = new Rectangle(left, bottom - diameter - 1, diameter, diameter);
 
-            // Add arcs and lines to create the rounded corners path
             path.AddArc(rectTL, 180, 90);
             path.AddLine(left + radius, top, right - radius, top);
             path.AddArc(rectTR, 270, 90);
@@ -135,10 +123,8 @@ namespace FourUI
 
             path.CloseFigure();
 
-            // Set the control's region to the rounded corners path
             control.Region = new Region(path);
 
-            // Fill the rounded corners with the background color
             using (SolidBrush brush = new SolidBrush(fillColor))
             {
                 control.CreateGraphics().FillPath(brush, path);

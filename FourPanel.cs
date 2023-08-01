@@ -10,7 +10,7 @@ namespace FourUI
     {
         private int cornerRadius = 5;
         private Color panelColor = Color.FromArgb(32, 32, 32);
-        private int borderWidth = 2; 
+        private int borderWidth = 2;
         [Browsable(true)]
         [Category("Appearance")]
         [Description("The radius of the rounded corners.")]
@@ -20,7 +20,8 @@ namespace FourUI
             set
             {
                 cornerRadius = Math.Max(0, value);
-                Invalidate();             }
+                Invalidate();
+            }
         }
 
         [Browsable(true)]
@@ -32,7 +33,8 @@ namespace FourUI
             set
             {
                 panelColor = value;
-                Invalidate();             }
+                Invalidate();
+            }
         }
 
         protected override CreateParams CreateParams
@@ -40,7 +42,7 @@ namespace FourUI
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x20;                 return cp;
+                cp.ExStyle |= 0x20; return cp;
             }
         }
 
@@ -91,6 +93,7 @@ namespace FourUI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            Invalidate();         }
+            Invalidate();
+        }
     }
 }

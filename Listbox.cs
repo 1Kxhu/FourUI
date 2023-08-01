@@ -5,7 +5,6 @@ using System.Windows.Forms;
 
 namespace FourUI
 {
-    // A custom ListBox control with rounded corners and customizable appearance
     public class FourListBox : ListBox
     {
         private Color itemBackgroundColor = Color.FromArgb(240, 240, 240);
@@ -17,7 +16,6 @@ namespace FourUI
 
         public FourListBox()
         {
-            // Set initial control properties
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             SetStyle(ControlStyles.Opaque, true);
@@ -28,35 +26,30 @@ namespace FourUI
             ItemHeight = 28;
         }
 
-        // Background color of list items
         public Color ItemBackgroundColor
         {
             get => itemBackgroundColor;
             set { itemBackgroundColor = value; Invalidate(); }
         }
 
-        // Text color of list items
         public Color ItemTextColor
         {
             get => itemTextColor;
             set { itemTextColor = value; Invalidate(); }
         }
 
-        // Background color of the selected list item
         public Color SelectedItemBackgroundColor
         {
             get => selectedItemBackgroundColor;
             set { selectedItemBackgroundColor = value; Invalidate(); }
         }
 
-        // Text color of the selected list item
         public Color SelectedItemTextColor
         {
             get => selectedItemTextColor;
             set { selectedItemTextColor = value; Invalidate(); }
         }
 
-        // Corner radius for rounded corners
         public int CornerRadius
         {
             get => cornerRadius;
@@ -65,7 +58,6 @@ namespace FourUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            // Draw the background with rounded corners
             using (SolidBrush backgroundBrush = new SolidBrush(itemBackgroundColor))
             using (GraphicsPath backgroundPath = CreateRoundedRectanglePath(ClientRectangle, cornerRadius))
             {
@@ -84,14 +76,12 @@ namespace FourUI
             Color backgroundColor = isSelected ? selectedItemBackgroundColor : itemBackgroundColor;
             Color textColor = isSelected ? selectedItemTextColor : itemTextColor;
 
-            // Interpolate colors for a smooth transition effect
             if (isSelected && selectedIndex != e.Index)
             {
                 backgroundColor = InterpolateColor(itemBackgroundColor, selectedItemBackgroundColor, 0.5f);
                 textColor = selectedItemTextColor;
             }
 
-            // Draw the list item with rounded corners
             using (SolidBrush brush = new SolidBrush(backgroundColor))
             using (Pen borderPen = new Pen(Parent.BackColor, 2))
             {
@@ -115,7 +105,6 @@ namespace FourUI
             base.OnDrawItem(e);
         }
 
-        // Create a GraphicsPath for a rounded rectangle
         private GraphicsPath CreateRoundedRectanglePath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -138,7 +127,6 @@ namespace FourUI
             return path;
         }
 
-        // Interpolate between two colors based on a progress value
         private Color InterpolateColor(Color startColor, Color endColor, float progress)
         {
             int r = (int)(startColor.R + (endColor.R - startColor.R) * progress);
@@ -149,7 +137,6 @@ namespace FourUI
 
         protected override void OnSelectedIndexChanged(EventArgs e)
         {
-            // Invalidate previously selected and newly selected items
             InvalidateSelectedItems();
             selectedIndex = SelectedIndex;
             InvalidateSelectedItems();

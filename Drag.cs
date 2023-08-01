@@ -5,16 +5,10 @@ using System.Windows.Forms;
 
 namespace FourUI
 {
-    // A component for enabling draggable behavior for a Windows Form
     public partial class FourDrag : Component
     {
-        private Form targetControl; // The form to be dragged
-        private bool isDragging = false; // Flag to indicate if dragging is in progress
-        private Point mouseOffset; // Offset between the mouse cursor and the form's position
-        private float smoothness = 7f; // Default smoothness value for smooth dragging
-
-        private Timer smoothMoveTimer; // Timer for smooth movement
-
+        private Form targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 7f;
+        private Timer smoothMoveTimer;
         public FourDrag()
         {
             InitializeTimer();
@@ -26,12 +20,10 @@ namespace FourUI
             InitializeTimer();
         }
 
-        // Initializes the smoothMoveTimer
         private void InitializeTimer()
         {
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1; // Adjust this value if needed
-            smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
+            smoothMoveTimer.Interval = 1; smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
         public Form TargetControl
@@ -39,7 +31,6 @@ namespace FourUI
             get { return targetControl; }
             set
             {
-                // Unsubscribe from event handlers of the previous form
                 if (targetControl != null)
                 {
                     targetControl.MouseDown -= TargetControl_MouseDown;
@@ -49,7 +40,6 @@ namespace FourUI
 
                 targetControl = value;
 
-                // Subscribe to event handlers of the new form
                 if (targetControl != null)
                 {
                     targetControl.MouseDown += TargetControl_MouseDown;

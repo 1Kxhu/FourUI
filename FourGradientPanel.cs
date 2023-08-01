@@ -6,16 +6,14 @@ namespace FourUI
 {
     public class FourGradientPanel : Panel
     {
-        private Color gradientTopColor = Color.Blue; // Default top color
-        private Color gradientBottomColor = Color.Transparent; // Default bottom color
-
+        private Color gradientTopColor = Color.Blue; private Color gradientBottomColor = Color.Transparent;
         public Color GradientTopColor
         {
             get => gradientTopColor;
             set
             {
                 gradientTopColor = value;
-                Invalidate(); // Redraw the panel when the top color changes
+                Invalidate();
             }
         }
 
@@ -25,31 +23,27 @@ namespace FourUI
             set
             {
                 gradientBottomColor = value;
-                Invalidate(); // Redraw the panel when the bottom color changes
+                Invalidate();
             }
         }
 
         public FourGradientPanel()
         {
-            DoubleBuffered = true; // Enable double-buffering for smoother rendering
-            SetStyle(ControlStyles.ResizeRedraw, true); // Redraw when resizing
+            DoubleBuffered = true; SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            // Check if the bottom color is transparent
             if (gradientBottomColor == Color.Transparent)
             {
-                // If it is, draw the background of the parent control (e.g., the form) first
                 using (var parentBrush = new SolidBrush(Parent.BackColor))
                 {
                     e.Graphics.FillRectangle(parentBrush, ClientRectangle);
                 }
             }
 
-            // Use a blend if either top or bottom color is transparent
             if (gradientTopColor.A < 255 || gradientBottomColor.A < 255)
             {
                 using (var blendBrush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, LinearGradientMode.Vertical))
@@ -64,7 +58,6 @@ namespace FourUI
             }
             else
             {
-                // Use a regular LinearGradientBrush if both colors are opaque
                 using (var brush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, LinearGradientMode.Vertical))
                 {
                     e.Graphics.FillRectangle(brush, ClientRectangle);
