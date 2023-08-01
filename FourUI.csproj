@@ -47,6 +47,9 @@
     <Compile Include="FourButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FourGradientPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FourPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -11,15 +11,16 @@ namespace FourUI
     {
         private Form targetForm; // The form to apply rounded corners to
         private int cornerRadius = 10; // The radius of the rounded corners
-        private Color backgroundColor; // The background color of the form
 
         public FourRound()
         {
+
         }
 
         public FourRound(IContainer container)
         {
             container.Add(this);
+
         }
 
         [Browsable(true)]
@@ -33,22 +34,23 @@ namespace FourUI
                 if (targetForm != null)
                 {
                     SetRoundedCorners(targetForm, cornerRadius);
+                    targetForm.Refresh();
                 }
             }
         }
 
-        [Browsable(true)]
+        [Browsable(false)]
         public Color DontChangeThis
         {
             get { return fillColor; }
             set
             {
-                
+
                 if (targetForm != null)
                 {
-             
+
                     SetRoundedCorners(targetForm, cornerRadius);
-                    
+
                 }
             }
         }
@@ -79,6 +81,7 @@ namespace FourUI
         // Event handler for when the target form is loaded
         private void TargetForm_Load(object sender, EventArgs e)
         {
+            fillColor = targetForm.BackColor;
             SetRoundedCorners(targetForm, cornerRadius);
         }
 
@@ -98,6 +101,7 @@ namespace FourUI
         // Method to set the rounded corners for a control
         private void SetRoundedCorners(Control control, int radius)
         {
+            fillColor = targetForm.BackColor;
             GraphicsPath path = new GraphicsPath();
 
             // Subscribe to events related to form resizing
