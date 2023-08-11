@@ -1,12 +1,10 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Logo](https://cdn.discordapp.com/attachments/1125385820199714828/1139533285463167017/4UI_logo.png)](https://github.com/1Kxhu/FourUI)
+
 
 # FourUI
 
 FourUI aims to recreate the smoothness of WPF by applying various tricks and workarounds.
-
-# Showcase
-
-I'm too lazy to make one, sorry lol.
 
 # Key Features
 
