@@ -36,6 +36,8 @@ namespace FourUI
         {
             base.OnPaint(e);
 
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias; // Enable anti-aliasing
+
             if (gradientBottomColor == Color.Transparent)
             {
                 using (var parentBrush = new SolidBrush(Parent.BackColor))
@@ -49,7 +51,7 @@ namespace FourUI
                 using (var blendBrush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, LinearGradientMode.Vertical))
                 {
                     ColorBlend blend = new ColorBlend();
-                    blend.Positions = new[] { (float)0, (float)1 };
+                    blend.Positions = new[] { 0f, 1f };
                     blend.Colors = new[] { gradientTopColor, gradientBottomColor };
                     blendBrush.InterpolationColors = blend;
 
@@ -64,5 +66,6 @@ namespace FourUI
                 }
             }
         }
+
     }
 }

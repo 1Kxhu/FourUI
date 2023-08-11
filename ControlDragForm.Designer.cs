@@ -1,6 +1,6 @@
 ﻿namespace FourUI
 {
-    partial class FourDrag
+    partial class FourControlDrag
     {
         private System.ComponentModel.IContainer components = null;
 
