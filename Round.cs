@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -10,11 +11,30 @@ namespace FourUI
     {
         private Form targetForm;
         private int cornerRadius = 10;
+        private bool isResizing = false;
 
         public FourRound()
         {
-            
+
         }
+
+        public void Wait(int time)
+        {
+            Thread thread = new Thread(delegate ()
+            {
+                System.Threading.Thread.Sleep(time);
+            });
+            thread.Start();
+            while (thread.IsAlive)
+                Application.DoEvents();
+        }
+
+        private void a(object sender, EventArgs e)
+        {
+            SetRoundedCorners(targetForm, cornerRadius);
+            targetForm.Invalidate();
+        }
+
 
         public FourRound(IContainer container)
         {
@@ -32,7 +52,7 @@ namespace FourUI
                 if (targetForm != null)
                 {
                     SetRoundedCorners(targetForm, cornerRadius);
-                    targetForm.Invalidate(); // Trigger repaint with new settings
+                    targetForm.Invalidate();
                 }
             }
         }
@@ -46,7 +66,7 @@ namespace FourUI
                 if (targetForm != null)
                 {
                     SetRoundedCorners(targetForm, cornerRadius);
-                    targetForm.Invalidate(); // Trigger repaint with current settings
+                    targetForm.Invalidate();
                 }
             }
         }
@@ -60,7 +80,6 @@ namespace FourUI
                 {
                     targetForm.Load -= TargetForm_Load;
                     targetForm.BackColorChanged -= TargetForm_BackColorChanged;
-                    targetForm.Paint -= OnPaint; // Unhook the old Paint event
                 }
 
                 targetForm = value;
@@ -69,156 +88,77 @@ namespace FourUI
                 {
                     targetForm.Load += TargetForm_Load;
                     targetForm.BackColorChanged += TargetForm_BackColorChanged;
-                    targetForm.Paint += OnPaint; // Hook the new Paint event
+                    targetForm.Resize += TargetForm_Resize;
+                    targetForm.ImeMode = ImeMode.Off;
                 }
             }
         }
+
+        private void TargetForm_Resize(object sender, EventArgs e)
+        {
+            if (!isResizing)
+            {
+                isResizing = true;
+                Wait(35);
+
+                SetRoundedCorners(targetForm, cornerRadius);
+                targetForm.Invalidate();
+                isResizing = false;
+            }
+        }
+
 
         private void TargetForm_Load(object sender, EventArgs e)
         {
             fillColor = targetForm.BackColor;
             SetRoundedCorners(targetForm, cornerRadius);
-            targetForm.Invalidate(); // Trigger repaint on load
+            targetForm.Invalidate();
         }
-
-        Random r = new Random();
 
         private void TargetForm_BackColorChanged(object sender, EventArgs e)
         {
-            if (r.Next(1, 100) == 1)
-            {
-                SetRoundedCorners(targetForm, cornerRadius);
-                targetForm.Invalidate(); // Trigger repaint when back color changes
-            }
+            SetRoundedCorners(targetForm, cornerRadius);
+            targetForm.Invalidate();
         }
 
         private Color fillColor = Color.White;
 
         private void SetRoundedCorners(Control control, int radius)
         {
-            fillColor = targetForm.BackColor;
-            GraphicsPath path = new GraphicsPath();
-
             int diameter = radius * 2;
-            int left = control.ClientRectangle.Left;
-            int top = control.ClientRectangle.Top;
-            int right = control.ClientRectangle.Right;
-            int bottom = control.ClientRectangle.Bottom;
+            int borderWidth = 6;
 
-            Rectangle rectTL = new Rectangle(left, top, diameter, diameter);
-            Rectangle rectTR = new Rectangle(right - diameter - 1, top, diameter, diameter);
-            Rectangle rectBR = new Rectangle(right - diameter - 1, bottom - diameter - 1, diameter, diameter);
-            Rectangle rectBL = new Rectangle(left, bottom - diameter - 1, diameter, diameter);
+            Rectangle clientRect = control.ClientRectangle;
+            Rectangle borderRect = new Rectangle(clientRect.Left - borderWidth / 2, clientRect.Top - borderWidth / 2, clientRect.Width + borderWidth, clientRect.Height + borderWidth);
 
-            path.AddArc(rectTL, 180, 90);
-            path.AddLine(left + radius, top, right - radius, top);
-            path.AddArc(rectTR, 270, 90);
-            path.AddLine(right, top + radius, right, bottom - radius);
-            path.AddArc(rectBR, 0, 90);
-            path.AddLine(right - radius, bottom, left + radius, bottom);
-            path.AddArc(rectBL, 90, 90);
-            path.AddLine(left, bottom - radius, left, top + radius);
-
-            path.CloseFigure();
-
-            control.Region = new Region(path);
-
-            using (Graphics graphics = control.CreateGraphics())
+            using (GraphicsPath path = new GraphicsPath())
             {
-                // Enable anti-aliasing
-                graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                path.AddArc(new Rectangle(clientRect.Left, clientRect.Top, diameter, diameter), 180, 90);
+                path.AddLine(clientRect.Left + radius, clientRect.Top, clientRect.Right - radius, clientRect.Top);
+                path.AddArc(new Rectangle(clientRect.Right - diameter - 1, clientRect.Top, diameter, diameter), 270, 90);
+                path.AddLine(clientRect.Right, clientRect.Top + radius, clientRect.Right, clientRect.Bottom - radius);
+                path.AddArc(new Rectangle(clientRect.Right - diameter - 1, clientRect.Bottom - diameter - 1, diameter, diameter), 0, 90);
+                path.AddLine(clientRect.Right - radius, clientRect.Bottom, clientRect.Left + radius, clientRect.Bottom);
+                path.AddArc(new Rectangle(clientRect.Left, clientRect.Bottom - diameter - 1, diameter, diameter), 90, 90);
+                path.AddLine(clientRect.Left, clientRect.Bottom - radius, clientRect.Left, clientRect.Top + radius);
 
-                // Fill the path with the main BackColor
-                using (SolidBrush solidBrush = new SolidBrush(targetForm.BackColor))
+                path.CloseFigure();
+
+                control.Region = new Region(path);
+
+                using (Graphics graphics = control.CreateGraphics())
                 {
-                    graphics.FillPath(solidBrush, path);
-                }
+                    graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-                // Draw the semi-transparent border around the edges
-                int borderWidth = 6; // The width of the semi-transparent border
-                int adjustedRadius = radius + borderWidth / 2;
-
-                Rectangle borderRect = new Rectangle(left - borderWidth / 2, top - borderWidth / 2, right - left + borderWidth, bottom - top + borderWidth);
-
-                using (GraphicsPath borderPath = new GraphicsPath())
-                {
-                    borderPath.AddArc(rectTL, 180, 90);
-                    borderPath.AddLine(left + adjustedRadius, top, right - adjustedRadius, top);
-                    borderPath.AddArc(rectTR, 270, 90);
-                    borderPath.AddLine(right, top + adjustedRadius, right, bottom - adjustedRadius);
-                    borderPath.AddArc(rectBR, 0, 90);
-                    borderPath.AddLine(right - adjustedRadius, bottom, left + adjustedRadius - 1, bottom);
-                    borderPath.AddArc(rectBL, 90, 90);
-                    borderPath.AddLine(left, bottom - adjustedRadius, left + 1, top + adjustedRadius + 2);
-
-                    borderPath.CloseFigure();
-
-                    using (SolidBrush borderBrush = new SolidBrush(Color.FromArgb(80, targetForm.BackColor)))
+                    using (SolidBrush solidBrush = new SolidBrush(control.BackColor))
                     {
-                        graphics.FillPath(borderBrush, borderPath);
-                    }
-                }
-            }
-        }
-
-        protected void OnPaint(object sender, PaintEventArgs e)
-        {
-            if (targetForm != null)
-            {
-                using (GraphicsPath path = new GraphicsPath())
-                {
-                    int radius = cornerRadius;
-                    int diameter = radius * 2;
-                    int left = targetForm.ClientRectangle.Left;
-                    int top = targetForm.ClientRectangle.Top;
-                    int right = targetForm.ClientRectangle.Right;
-                    int bottom = targetForm.ClientRectangle.Bottom;
-
-                    Rectangle rectTL = new Rectangle(left, top, diameter, diameter);
-                    Rectangle rectTR = new Rectangle(right - diameter - 1, top, diameter, diameter);
-                    Rectangle rectBR = new Rectangle(right - diameter - 1, bottom - diameter - 1, diameter, diameter);
-                    Rectangle rectBL = new Rectangle(left, bottom - diameter - 1, diameter, diameter);
-
-                    path.AddArc(rectTL, 180, 90);
-                    path.AddLine(left + radius, top, right - radius, top);
-                    path.AddArc(rectTR, 270, 90);
-                    path.AddLine(right, top + radius, right, bottom - radius);
-                    path.AddArc(rectBR, 0, 90);
-                    path.AddLine(right - radius, bottom, left + radius, bottom);
-                    path.AddArc(rectBL, 90, 90);
-                    path.AddLine(left, bottom - radius, left, top + radius);
-
-                    path.CloseFigure();
-
-                    using (SolidBrush brush = new SolidBrush(targetForm.BackColor))
-                    {
-                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                        e.Graphics.FillPath(brush, path);
+                        graphics.FillPath(solidBrush, path);
                     }
 
-                    // Draw the semi-transparent border around the edges in the OnPaint method as well
-                    int borderWidth = 6; // The width of the semi-transparent border
-                    int adjustedRadius = radius + borderWidth / 2;
-
-                    Rectangle borderRect = new Rectangle(left - borderWidth / 2, top - borderWidth / 2, right - left + borderWidth, bottom - top + borderWidth);
-
-                    using (GraphicsPath borderPath = new GraphicsPath())
+                    path.Widen(new Pen(Color.Transparent, borderWidth));
+                    using (SolidBrush borderBrush = new SolidBrush(Color.FromArgb(80, control.BackColor)))
                     {
-                        borderPath.AddArc(rectTL, 180, 90);
-                        borderPath.AddLine(left + adjustedRadius, top, right - adjustedRadius, top);
-                        borderPath.AddArc(rectTR, 270, 90);
-                        borderPath.AddLine(right, top + adjustedRadius, right, bottom - adjustedRadius);
-                        borderPath.AddArc(rectBR, 0, 90);
-                        borderPath.AddLine(right - adjustedRadius, bottom, left + adjustedRadius, bottom);
-                        borderPath.AddArc(rectBL, 90, 90);
-                        borderPath.AddLine(left, bottom - adjustedRadius, left, top + adjustedRadius);
-
-                        borderPath.CloseFigure();
-
-                        using (SolidBrush borderBrush = new SolidBrush(Color.FromArgb(80, targetForm.BackColor)))
-                        {
-                            e.Graphics.FillPath(borderBrush, borderPath);
-                        }
+                        graphics.FillPath(borderBrush, path);
                     }
                 }
             }
