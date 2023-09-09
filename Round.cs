@@ -10,7 +10,7 @@ namespace FourUI
     public partial class FourRound : Component
     {
         private Form targetForm;
-        private int cornerRadius = 10;
+        private int cornerRadius = 4;
         private bool isResizing = false;
 
         public FourRound()
@@ -23,18 +23,16 @@ namespace FourUI
             Thread thread = new Thread(delegate ()
             {
                 System.Threading.Thread.Sleep(time);
+                isResizing = true;
             });
             thread.Start();
             while (thread.IsAlive)
+            {
                 Application.DoEvents();
-        }
+            }
+            isResizing = false;
 
-        private void a(object sender, EventArgs e)
-        {
-            SetRoundedCorners(targetForm, cornerRadius);
-            targetForm.Invalidate();
         }
-
 
         public FourRound(IContainer container)
         {
@@ -98,12 +96,10 @@ namespace FourUI
         {
             if (!isResizing)
             {
-                isResizing = true;
                 Wait(35);
 
                 SetRoundedCorners(targetForm, cornerRadius);
                 targetForm.Invalidate();
-                isResizing = false;
             }
         }
 
@@ -128,8 +124,9 @@ namespace FourUI
             int diameter = radius * 2;
             int borderWidth = 6;
 
+
+
             Rectangle clientRect = control.ClientRectangle;
-            Rectangle borderRect = new Rectangle(clientRect.Left - borderWidth / 2, clientRect.Top - borderWidth / 2, clientRect.Width + borderWidth, clientRect.Height + borderWidth);
 
             using (GraphicsPath path = new GraphicsPath())
             {

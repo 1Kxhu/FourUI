@@ -11,6 +11,8 @@ namespace FourUI
         private int cornerRadius = 5;
         private Color panelColor = Color.FromArgb(32, 32, 32);
         private int borderWidth = 2;
+
+
         [Browsable(true)]
         [Category("Appearance")]
         [Description("The radius of the rounded corners.")]
@@ -60,8 +62,8 @@ namespace FourUI
 
             int arcSize = cornerRadius * 2;
 
-            Rectangle outerRect = new Rectangle(0, 0, Width - 1, Height - 1);
-            Rectangle innerRect = new Rectangle(borderWidth, borderWidth, Width - borderWidth * 2 - 1, Height - borderWidth * 2 - 1);
+            Rectangle outerRect = new Rectangle(0-2, 0-3, Width+4, Height-1);
+            Rectangle innerRect = new Rectangle(borderWidth - 1, borderWidth-1, Width - borderWidth * 2 + 2, Height - borderWidth * 2 + 2);
 
             using (GraphicsPath outerPath = new GraphicsPath())
             using (GraphicsPath innerPath = new GraphicsPath())
@@ -73,10 +75,10 @@ namespace FourUI
                 outerPath.AddArc(outerRect.X, outerRect.Height - arcSize, arcSize, arcSize, 90, 90);
                 outerPath.CloseFigure();
 
-                innerPath.AddArc(innerRect.X + 1, innerRect.Y + 2, arcSize, arcSize, 180, 90);
-                innerPath.AddArc(innerRect.Width - arcSize + 2, innerRect.Y + 2, arcSize, arcSize, 270, 90);
-                innerPath.AddArc(innerRect.Width - arcSize + 2, innerRect.Height - arcSize + 1, arcSize, arcSize, 0, 90);
-                innerPath.AddArc(innerRect.X + 1, innerRect.Height - arcSize + 1, arcSize, arcSize, 90, 90);
+                innerPath.AddArc(innerRect.X, innerRect.Y, arcSize, arcSize, 180, 90);
+                innerPath.AddArc(innerRect.Width - arcSize, innerRect.Y, arcSize, arcSize, 270, 90);
+                innerPath.AddArc(innerRect.Width - arcSize, innerRect.Height - arcSize, arcSize, arcSize, 0, 90);
+                innerPath.AddArc(innerRect.X, innerRect.Height - arcSize, arcSize, arcSize, 90, 90);
                 innerPath.CloseFigure();
 
                 using (Brush brush = new SolidBrush(panelColor))

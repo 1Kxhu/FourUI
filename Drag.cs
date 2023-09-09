@@ -7,7 +7,7 @@ namespace FourUI
 {
     public partial class FourDrag : Component
     {
-        private Form targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 7f;
+        private Form targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 4f;
         private Timer smoothMoveTimer;
         public FourDrag()
         {
@@ -52,7 +52,14 @@ namespace FourUI
         public float Smoothness
         {
             get { return smoothness; }
-            set { smoothness = value; }
+            set
+            { 
+                smoothness = value;
+                if (smoothness == 0)
+                {
+                    smoothness = 1;
+                } 
+            }
         }
 
         private void TargetControl_MouseDown(object sender, MouseEventArgs e)
@@ -63,7 +70,7 @@ namespace FourUI
 
         private void TargetControl_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDragging)
+            if (isDragging && smoothness != 1)
             {
                 Point mousePos = targetControl.PointToScreen(e.Location);
                 mousePos.Offset(-mouseOffset.X, -mouseOffset.Y);
@@ -76,6 +83,13 @@ namespace FourUI
 
                 smoothMoveTimer.Start();
                 smoothMoveTimer.Tag = new PointF(dx / smoothness, dy / smoothness);
+            }
+            if (isDragging && smoothness == 1)
+            {
+                Point mousePos = targetControl.PointToScreen(e.Location);
+                mousePos.Offset(-mouseOffset.X, -mouseOffset.Y);
+
+                targetControl.Location = mousePos;
             }
         }
 

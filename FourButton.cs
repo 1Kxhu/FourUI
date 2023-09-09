@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
@@ -9,11 +10,14 @@ namespace FourUI
 {
     public class FourButton : Button
     {
-        private int cornerRadius = 7; private int borderWidth = 2; private Color backColor2 = Color.FromArgb(32, 32, 32); private Color originalOriginalColor;
+        private int cornerRadius = 5; private int borderWidth = 2; private Color backColor2 = Color.FromArgb(32, 32, 32); private Color originalOriginalColor;
         private Color originalColor;
         private Color pressCol;
 
-        public Color BackColor2
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The hover color.")]
+        public Color HoverColor
         {
             get { return backColor2; }
             set
@@ -23,6 +27,9 @@ namespace FourUI
             }
         }
 
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The press color.")]
         public Color PressColor
         {
             get { return pressCol; }
@@ -33,7 +40,10 @@ namespace FourUI
             }
         }
 
-        public Color TransitionColor1
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The default state color.")]
+        public Color FillColor
         {
             get { return originalColor; }
             set
@@ -43,8 +53,9 @@ namespace FourUI
             }
         }
 
-        public Color TransitionColor2
+        private Color dontchangethis
         {
+            //sorry for doing this, its a workaround i did early indev and now im too scared that ill break something. 😓
             get { return backColor2; }
             set
             {
@@ -53,15 +64,17 @@ namespace FourUI
             }
         }
 
+
+
         public FourButton()
         {
-            TransitionColor1 = Color.FromArgb(32, 32, 32);
-            TransitionColor2 = Color.FromArgb(41, 41, 41);
-            pressCol = Color.FromArgb(244, 244, 244);
-            originalOriginalColor = TransitionColor1;
+            FillColor = Color.FromArgb(32, 32, 32);
+            dontchangethis = Color.FromArgb(41, 41, 41);
+            pressCol = Color.FromArgb(23, 23, 23);
+            originalOriginalColor = FillColor;
 
-            if (BackColor2.IsEmpty || !BackColor2.IsEmpty)
-                BackColor2 = backColor2;
+            if (HoverColor.IsEmpty || !HoverColor.IsEmpty)
+                HoverColor = backColor2;
 
             ForeColor = Color.White;
             Font = new Font("Microsoft Yahei UI", 10, FontStyle.Regular);
@@ -212,7 +225,7 @@ namespace FourUI
         }
 
         protected override void OnPaint(PaintEventArgs pevent)
-        {
+        { 
 
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
@@ -247,6 +260,9 @@ namespace FourUI
     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The rounding value.")]
         public int CornerRadius
         {
             get { return cornerRadius; }
@@ -256,21 +272,5 @@ namespace FourUI
                 Refresh();
             }
         }
-
-        private static GraphicsPath CreateRoundedRectanglePath(Rectangle rectangle, int cornerRadius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            int arcSize = 2 * cornerRadius;
-
-            path.AddArc(rectangle.Left, rectangle.Top, arcSize, arcSize, 180, 90);
-            path.AddArc(rectangle.Right - arcSize, rectangle.Top, arcSize, arcSize, 270, 90);
-            path.AddArc(rectangle.Right - arcSize, rectangle.Bottom - arcSize, arcSize, arcSize, 0, 90);
-            path.AddArc(rectangle.Left, rectangle.Bottom - arcSize, arcSize, arcSize, 90, 90);
-
-            path.CloseFigure();
-
-            return path;
-        }
-
     }
 }

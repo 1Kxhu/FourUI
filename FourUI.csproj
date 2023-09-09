@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WindowFade.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WindowFade.Designer.cs">
+      <DependentUpon>WindowFade.cs</DependentUpon>
+    </Compile>
     <Compile Include="ControlDragForm.cs">
       <SubType>Component</SubType>
     </Compile>
