@@ -64,7 +64,22 @@ namespace FourUI
             }
         }
 
-
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The rounding value.")]
+        public int CornerRadius
+        {
+            get { return cornerRadius; }
+            set
+            {
+                if (value == 0)
+                {
+                    value = 1;
+                }
+                cornerRadius = value;
+                Refresh();
+            }
+        }
 
         public FourButton()
         {
@@ -203,7 +218,7 @@ namespace FourUI
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
 
-            Color targetColor = backColor2; int steps = 15; int delay = 1;
+            Color targetColor = backColor2; int steps = 7; int delay = 1;
             int deltaR = (targetColor.R - originalColor.R) / steps;
             int deltaG = (targetColor.G - originalColor.G) / steps;
             int deltaB = (targetColor.B - originalColor.B) / steps;
@@ -258,19 +273,6 @@ namespace FourUI
 
             TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, ForeColor,
     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-        }
-
-        [Browsable(true)]
-        [Category("FourUI")]
-        [Description("The rounding value.")]
-        public int CornerRadius
-        {
-            get { return cornerRadius; }
-            set
-            {
-                cornerRadius = value;
-                Refresh();
-            }
         }
     }
 }

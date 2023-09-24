@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
@@ -6,7 +7,13 @@ namespace FourUI
 {
     public class FourGradientPanel : Panel
     {
-        private Color gradientTopColor = Color.Blue; private Color gradientBottomColor = Color.Transparent;
+        private Color gradientTopColor = Color.FromArgb(33, 133, 255);
+        private Color gradientBottomColor = Color.Transparent; 
+        private SelectionOption selection = SelectionOption.Vertical;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The first gradient color.")]
         public Color GradientTopColor
         {
             get => gradientTopColor;
@@ -17,6 +24,9 @@ namespace FourUI
             }
         }
 
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The second gradient color.")]
         public Color GradientBottomColor
         {
             get => gradientBottomColor;
@@ -27,6 +37,26 @@ namespace FourUI
             }
         }
 
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The way in which the gradient goes")]
+        public SelectionOption UserChoice
+        {
+            get => selection;
+            set
+            {
+                selection = value;
+                Invalidate();
+            }
+        }
+
+        public enum SelectionOption
+        {
+            Horizontal,
+            Vertical
+        }
+
+
         public FourGradientPanel()
         {
             DoubleBuffered = true; SetStyle(ControlStyles.ResizeRedraw, true);
@@ -34,9 +64,7 @@ namespace FourUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias; // Enable anti-aliasing
+            
 
             if (gradientBottomColor == Color.Transparent)
             {
@@ -46,9 +74,21 @@ namespace FourUI
                 }
             }
 
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            LinearGradientMode mode;
+            if (selection == SelectionOption.Horizontal)
+            {
+                mode = LinearGradientMode.Horizontal;
+            }
+            else
+            {
+                mode = LinearGradientMode.Vertical;
+            }
+
             if (gradientTopColor.A < 255 || gradientBottomColor.A < 255)
             {
-                using (var blendBrush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, LinearGradientMode.Vertical))
+                using (var blendBrush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, mode))
                 {
                     ColorBlend blend = new ColorBlend();
                     blend.Positions = new[] { 0f, 1f };
@@ -60,7 +100,7 @@ namespace FourUI
             }
             else
             {
-                using (var brush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, LinearGradientMode.Vertical))
+                using (var brush = new LinearGradientBrush(ClientRectangle, gradientTopColor, gradientBottomColor, mode))
                 {
                     e.Graphics.FillRectangle(brush, ClientRectangle);
                 }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -46,6 +47,11 @@ namespace FourUI
             get { return cornerRadius; }
             set
             {
+
+                if (value == 0)
+                {
+                    value = 1;
+                }
                 cornerRadius = value;
                 if (targetForm != null)
                 {
@@ -121,10 +127,9 @@ namespace FourUI
 
         private void SetRoundedCorners(Control control, int radius)
         {
+
             int diameter = radius * 2;
             int borderWidth = 6;
-
-
 
             Rectangle clientRect = control.ClientRectangle;
 
@@ -140,6 +145,7 @@ namespace FourUI
                 path.AddLine(clientRect.Left, clientRect.Bottom - radius, clientRect.Left, clientRect.Top + radius);
 
                 path.CloseFigure();
+
 
                 control.Region = new Region(path);
 

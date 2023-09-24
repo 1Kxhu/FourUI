@@ -1,13 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Management;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FourUI
 {
     public partial class FourControlDrag : Component
     {
-        private Control targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 7f;
+        private Control targetControl; 
+        private bool isDragging = false; 
+        private Point mouseOffset; 
+        private float smoothness = 7f;
         private Timer smoothMoveTimer;
         public FourControlDrag()
         {
@@ -20,10 +25,40 @@ namespace FourUI
             InitializeTimer();
         }
 
-        private void InitializeTimer()
+        int refreshRate = 60;
+
+        private async void InitializeTimer()
         {
+            refreshRate = -6; //i cant believe that someone ever got -6 fps
+            if (!DesignMode)
+            {
+                try
+                {
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                    foreach (ManagementObject mo in searcher.Get())
+                    {
+                        refreshRate = Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
+                        //MessageBox.Show(refreshRate + " Hz");
+                    }
+                }
+                catch
+                {
+                    refreshRate = 60;
+                }
+            }
+            else
+            {
+                refreshRate = 60;
+            }
+
+            while (refreshRate == -6)
+            {
+                await Task.Delay(100);
+            }
+
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1; smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
+            smoothMoveTimer.Interval = 1000/refreshRate; 
+            smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
         public Control TargetControl
@@ -31,13 +66,17 @@ namespace FourUI
             get { return targetControl; }
             set
             {
+                if (value is Form)
+                {
+                    throw new ArgumentException("Form cannot be set as the TargetControl.");
+                }
+
                 if (targetControl != null)
                 {
                     targetControl.MouseDown -= TargetControl_MouseDown;
                     targetControl.MouseMove -= TargetControl_MouseMove;
                     targetControl.MouseUp -= TargetControl_MouseUp;
                 }
-
                 targetControl = value;
 
                 if (targetControl != null)
@@ -52,7 +91,12 @@ namespace FourUI
         public float Smoothness
         {
             get { return smoothness; }
-            set { smoothness = value; }
+            set {
+                if (value == 0)
+                {
+                    value = 1;
+                }
+                smoothness = value; }
         }
 
         private void TargetControl_MouseDown(object sender, MouseEventArgs e)

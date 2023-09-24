@@ -21,11 +21,15 @@ namespace FourUI
             get { return cornerRadius; }
             set
             {
+                if (value == 0)
+                {
+                    value = 1;
+                }
                 cornerRadius = Math.Max(0, value);
                 Invalidate();
             }
         }
-
+                                  
         [Browsable(true)]
         [Category("Appearance")]
         [Description("The color of the panel.")]
@@ -34,6 +38,7 @@ namespace FourUI
             get { return panelColor; }
             set
             {
+    
                 panelColor = value;
                 Invalidate();
             }
@@ -46,7 +51,7 @@ namespace FourUI
                 CreateParams cp = base.CreateParams;
                 cp.ExStyle |= 0x20; return cp;
             }
-        }
+        } 
 
         public FourPanel()
         {

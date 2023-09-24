@@ -1,6 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Management;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -9,6 +13,7 @@ namespace FourUI
     {
         private Form targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 4f;
         private Timer smoothMoveTimer;
+        int refreshRate = -6;
         public FourDrag()
         {
             InitializeTimer();
@@ -20,10 +25,39 @@ namespace FourUI
             InitializeTimer();
         }
 
-        private void InitializeTimer()
+
+
+        private async void InitializeTimer()
         {
+            refreshRate = -6; //i cant believe that someone ever got -6 fps
+            if (!DesignMode)
+            {
+                try
+                {
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                    foreach (ManagementObject mo in searcher.Get())
+                    {
+                        refreshRate = Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
+                        //MessageBox.Show(refreshRate + " Hz");
+                    }
+                }
+                catch
+                {
+                    refreshRate = 60;
+                }
+            }
+            else
+            {
+                refreshRate = 60;
+            }
+
+            while (refreshRate == -6)
+            {
+                await Task.Delay(100);
+            }
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1; smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
+            smoothMoveTimer.Interval = 1000/ refreshRate;
+            smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
         public Form TargetControl
@@ -53,12 +87,12 @@ namespace FourUI
         {
             get { return smoothness; }
             set
-            { 
-                smoothness = value;
-                if (smoothness == 0)
+            {
+                if (value == 0)
                 {
-                    smoothness = 1;
-                } 
+                    value = 1;
+                }
+                smoothness = value;
             }
         }
 
