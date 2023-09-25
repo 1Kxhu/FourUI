@@ -10,7 +10,7 @@ FourUI aims to recreate the smoothness of WPF by applying various tricks and wor
 
 - Form Rounding: Create rounded forms for a sleek and modern design.
 - Smooth Form Drag: Experience a never-seen smooth dragging functionality.
-- Customizable Components: Customize buttons, listboxes, and panels to fit your application's needs.
+- Customizable Components: Customize buttons, switches, panels and more to fit your application's needs.
 
 # Frequently Asked Questions (FAQ)
 
@@ -24,4 +24,4 @@ Absolutely not! FourUI's source code is open to everyone, ensuring transparency 
 FourUI provides highly customizable controls and components, including various animation options.
 
 ### **Why trust FourUI?**
-FourUI is developed by me (itzkxhu), I want to level up my skills. Transparency and accountability are things I've acknowledged.
+FourUI is developed by itzkxhu(me) and I am not the type of person who'd randomly switch sides.
