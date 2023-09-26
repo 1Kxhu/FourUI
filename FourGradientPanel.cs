@@ -8,7 +8,7 @@ namespace FourUI
     public class FourGradientPanel : Panel
     {
         private Color gradientTopColor = Color.FromArgb(33, 133, 255);
-        private Color gradientBottomColor = Color.Transparent; 
+        private Color gradientBottomColor = Color.Transparent;
         private SelectionOption selection = SelectionOption.Vertical;
 
         [Browsable(true)]
@@ -64,7 +64,7 @@ namespace FourUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            
+
 
             if (gradientBottomColor == Color.Transparent)
             {

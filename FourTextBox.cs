@@ -13,13 +13,15 @@ public class FourTextBox : Control
     private bool isCaretVisible = true;
     private Timer caretBlinkTimer;
 
-    private Color unfocusedbg = Color.FromArgb(21,21,21);
-    private Color unfocusedborder = Color.FromArgb(41,41,41);
+    private Color unfocusedbg = Color.FromArgb(21, 21, 21);
+    private Color unfocusedborder = Color.FromArgb(41, 41, 41);
 
-    private Color focusedbg = Color.FromArgb(31,31,31);
-    private Color focusedborder = Color.FromArgb(51,51,51);
+    private Color focusedbg = Color.FromArgb(31, 31, 31);
+    private Color focusedborder = Color.FromArgb(51, 51, 51);
 
-    private Color caretcolor = Color.FromArgb(221,221,221);
+    private Color placeholderForeColor = Color.FromArgb(66, 66, 66);
+
+    private Color caretcolor = Color.FromArgb(221, 221, 221);
 
     int borderRadius = 5;
     int borderSize = 1;
@@ -35,6 +37,15 @@ public class FourTextBox : Control
 
     [Browsable(true)]
     [Category("FourUI")]
+    [Description("The background color when focused.")]
+    public Color FocusedBackgroundColor
+    {
+        get { return focusedbg; }
+        set { focusedbg = value; Invalidate(); }
+    }
+
+    [Browsable(true)]
+    [Category("FourUI")]
     [Description("The border color when unfocused.")]
     public Color UnfocusedBorderColor
     {
@@ -42,14 +53,6 @@ public class FourTextBox : Control
         set { unfocusedborder = value; Invalidate(); }
     }
 
-    [Browsable(true)]
-    [Category("FourUI")]
-    [Description("The background color when focused.")]
-    public Color FocusedBackgroundColor
-    {
-        get { return focusedbg; }
-        set { focusedbg = value; Invalidate(); }
-    }
 
     [Browsable(true)]
     [Category("FourUI")]
@@ -62,11 +65,20 @@ public class FourTextBox : Control
 
     [Browsable(true)]
     [Category("FourUI")]
-    [Description("The border color when focused.")]
+    [Description("The caret color.")]
     public Color CaretColor
     {
         get { return caretcolor; }
         set { caretcolor = value; Invalidate(); }
+    }
+
+    [Browsable(true)]
+    [Category("FourUI")]
+    [Description("The background color when unfocused.")]
+    public Color PlaceholderForeColor
+    {
+        get { return placeholderForeColor; }
+        set { placeholderForeColor = value; Invalidate(); }
     }
 
     [Browsable(true)]
@@ -80,12 +92,14 @@ public class FourTextBox : Control
 
     [Browsable(true)]
     [Category("FourUI")]
-    [Description("The size of the border around the control.")]
+    [Description("The radius of the rounding.")]
     public int BorderSize
     {
         get { return borderSize; }
         set { borderSize = value; Invalidate(); }
     }
+
+    int caretxoffset = 6;
 
     public FourTextBox()
     {
@@ -110,16 +124,14 @@ public class FourTextBox : Control
         this.TextChanged += textchanged;
 
         caretBlinkTimer = new Timer();
-        caretBlinkTimer.Interval = 500; // Set the blinking interval here (e.g., 500ms)
-        caretBlinkTimer.Tick += CaretBlinkTimer_Tick;
-        caretBlinkTimer.Start(); // Start the timer
+        caretBlinkTimer.Interval = 500; caretBlinkTimer.Tick += CaretBlinkTimer_Tick;
+        caretBlinkTimer.Start();
     }
 
     private void CaretBlinkTimer_Tick(object sender, EventArgs e)
     {
-        // Toggle the caret visibility
         isCaretVisible = !isCaretVisible;
-        Invalidate(); // Force a repaint to update caret visibility
+        Invalidate();
     }
 
     private void mouseleave(object sender, EventArgs e)
@@ -159,7 +171,7 @@ public class FourTextBox : Control
     private void CustomTextBox_LostFocus(object sender, EventArgs e)
     {
         isFocused = false;
-        
+
         this.Invalidate();
     }
 
@@ -195,51 +207,65 @@ public class FourTextBox : Control
     protected override void OnPaint(PaintEventArgs e)
     {
         //base.OnPaint(e);
- 
+
+
 
         Pen caretpen = new Pen(caretcolor);
 
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-        e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
 
 
-        // Draw the border with rounded corners
-        using (GraphicsPath path = CreateRoundedRectanglePath(new Rectangle(0+1, 0+1, Width - 1, Height - 1), borderRadius))
+
+        using (GraphicsPath path = CreateRoundedRectanglePath(new Rectangle(0 + 1, 0 + 1, Width - 1, Height - 1), borderRadius))
         {
             e.Graphics.FillPath(new SolidBrush(isFocused ? focusedbg : unfocusedbg), path);
-            using (Pen borderPen = new Pen(isFocused ? focusedborder : unfocusedborder, borderSize))
+            using (Pen borderPen = new Pen(isFocused ? focusedborder : unfocusedborder, BorderSize))
             {
                 e.Graphics.DrawPath(borderPen, path);
             }
 
-   
+
         }
 
 
-        // Draw the text
-        
 
-     
+        if (Text == "" && isFocused)
+        {
+            caretxoffset = 6;
 
-        TextRenderer.DrawText(e.Graphics, Text, Font, new Point(5, (Height - Font.Height) / 2), ForeColor);
+        }
+        else
+        {
+            caretxoffset = 0;
+        }
+
+        if (Text == "" && !isFocused)
+        {
+            TextRenderer.DrawText(e.Graphics, "Placeholder textbox text.", Font, new Point(5, (Height - Font.Height) / 2), PlaceholderForeColor);
+        }
+        else
+        {
 
 
+            TextRenderer.DrawText(e.Graphics, Text, Font, new Point(5, (Height - Font.Height) / 2), ForeColor);
+
+
+        }
 
         if (isFocused)
         {
-            if (isCaretVisible) // Draw the caret if it's visible
+            if (isCaretVisible)
             {
-                var cursorX = TextRenderer.MeasureText(Text, Font).Width;
-                e.Graphics.DrawLine(caretpen, cursorX, (Height / 2) - 10, cursorX, (Height / 2) + 10);
+                int next_x = TextRenderer.MeasureText(Text, Font).Width;
+                e.Graphics.DrawLine(caretpen, next_x + caretxoffset, (Height / 2) - 10, next_x + caretxoffset, (Height / 2) + 10);
             }
         }
     }
 
 
 
-    // Helper method to create a rounded rectangle path
+
     private GraphicsPath CreateRoundedRectanglePath(Rectangle rectangle, int borderRadius)
     {
         GraphicsPath path = new GraphicsPath();
@@ -248,14 +274,10 @@ public class FourTextBox : Control
         Size size = new Size(diameter, diameter);
         Rectangle arc = new Rectangle(rectangle.Location, size);
 
-        path.AddArc(arc, 180, 90); // Top left arc
-        arc.X = rectangle.Right - diameter -1;
-        path.AddArc(arc, 270, 90); // Top right arc
-        arc.Y = rectangle.Bottom - diameter -1;
-        path.AddArc(arc, 0, 90);   // Bottom right arc
-        arc.X = rectangle.Left;
-        path.AddArc(arc, 90, 90);  // Bottom left arc
-
+        path.AddArc(arc, 180, 90); arc.X = rectangle.Right - diameter - 1;
+        path.AddArc(arc, 270, 90); arc.Y = rectangle.Bottom - diameter - 1;
+        path.AddArc(arc, 0, 90); arc.X = rectangle.Left;
+        path.AddArc(arc, 90, 90);
         path.CloseFigure();
 
         return path;
@@ -269,7 +291,6 @@ public class FourTextBox : Control
 
         if (m.Msg == WM_MOUSEACTIVATE && !this.Focused)
         {
-            // Prevent the control from being activated when clicked
             m.Result = (IntPtr)MA_NOACTIVATE;
             return;
         }

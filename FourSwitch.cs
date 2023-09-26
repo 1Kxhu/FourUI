@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Management;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -9,13 +12,15 @@ namespace FourUI
     {
         private Color thumbColorUnchecked = Color.Crimson;
         private Color thumbColorChecked = Color.FromArgb(33, 133, 255);
-        private Color trackColor = Color.FromArgb(21,21,21);
+        private Color trackColor = Color.FromArgb(21, 21, 21);
 
         private bool ischecked = false;
         private int thumbX;
         private int startX = 4;
         private int endX;
         private int thumbWidth;
+
+        int refreshRate = -6;
 
         private designchoice dchoice = FourSwitch.designchoice.Inward;
 
@@ -101,8 +106,12 @@ namespace FourUI
 
         public FourSwitch()
         {
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.DoubleBuffer, true);
             DoubleBuffered = true;
-            SetStyle(ControlStyles.ResizeRedraw | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.ResizeRedraw, true);
+
+
 
             endX = Width - thumbWidth - 5;
 
@@ -115,8 +124,53 @@ namespace FourUI
                 ischecked = !ischecked;
                 AnimateThumb();
             };
+
+            InitializeTimer();
         }
 
+
+
+        private async void InitializeTimer()
+        {
+            //BackColor = Parent.BackColor;
+            refreshRate = -6; //i cant believe that someone ever got -6 fps
+            if (!DesignMode)
+            {
+                try
+                {
+                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                    foreach (ManagementObject mo in searcher.Get())
+                    {
+                        refreshRate = Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
+                        //MessageBox.Show(refreshRate + " Hz");
+                    }
+                }
+                catch
+                {
+                    refreshRate = 60;
+                }
+            }
+            else
+            {
+                refreshRate = 60;
+            }
+
+            while (refreshRate == -6)
+            {
+                await Task.Delay(100);
+            }
+            smoothMoveTimer = new Timer();
+            smoothMoveTimer.Interval = 1000 / refreshRate;
+            smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
+        }
+
+        private Timer smoothMoveTimer;
+
+
+        private void SmoothMoveTimer_Tick(object sender, EventArgs e)
+        {
+
+        }
 
         [Browsable(true)]
         [Category("FourUI")]
@@ -136,9 +190,8 @@ namespace FourUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
 
             int cornerRadius = (Height / 2) - 1;
             int rectX = 0;
@@ -146,10 +199,11 @@ namespace FourUI
             int rectWidth = Width - 1;
             int rectHeight = Height - 1;
 
+
             thumbWidth = Height - 9;
 
 
-
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             if (dchoice == designchoice.Inward)
             {
                 endX = Width - (Height - 9) - 3;
@@ -200,7 +254,7 @@ namespace FourUI
                 {
                     thumbColor = thumbColorChecked;
                     thumbX = endX;
-                    animatedThumbX = endX-1;
+                    animatedThumbX = endX - 1;
                 }
                 else
                 {
@@ -222,22 +276,33 @@ namespace FourUI
         private GraphicsPath RoundedRectangle(int x, int y, int width, int height, int radius)
         {
             GraphicsPath path = new GraphicsPath();
+            int diameter = radius * 2;
+
             path.StartFigure();
-            path.AddArc(x, y, radius * 2, radius * 2, 180, 90);
-            path.AddLine(x + radius, y, x + width - radius, y);
-            path.AddArc(x + width - radius * 2, y, radius * 2, radius * 2, 270, 90);
-            path.AddLine(x + width, y + radius, x + width, y + height - radius);
-            path.AddArc(x + width - radius * 2, y + height - radius * 2, radius * 2, radius * 2, 0, 90);
-            path.AddLine(x + width - radius, y + height, x + radius, y + height);
-            path.AddArc(x, y + height - radius * 2, radius * 2, radius * 2, 90, 90);
+            path.AddArc(x, y, diameter, diameter, 180, 90);
+            path.AddArc(x + width - diameter, y, diameter, diameter, 270, 90);
+            path.AddArc(x + width - diameter, y + height - diameter, diameter, diameter, 0, 90);
+            path.AddArc(x, y + height - diameter, diameter, diameter, 90, 90);
+
             path.CloseFigure();
+
             return path;
         }
+
 
         private void AnimateThumb()
         {
             Timer animationTimer = new Timer();
-            animationTimer.Interval = 10;
+            if (refreshRate > 1)
+            {
+                animationTimer.Interval = 1000 / refreshRate;
+            }
+            else
+            {
+                animationTimer.Interval = 60;
+            }
+
+
 
             animationTimer.Tick += (sender, e) =>
                 {

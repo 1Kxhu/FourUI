@@ -5,11 +5,10 @@ using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static FourUI.FourCircleButton;
 
 namespace FourUI
 {
-    public class FourButton : Button
+    public class FourCircleButton : Button
     {
         private int cornerRadius = 5; private int borderWidth = 2; private Color backColor2 = Color.FromArgb(32, 32, 32); private Color originalOriginalColor;
         private Color originalColor;
@@ -41,6 +40,36 @@ namespace FourUI
             }
         }
 
+        private Size imageSize = new Size(20, 20);
+        private bool stretchImage = false;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The size of the image displayed on the button.")]
+        public Size ImageSize
+        {
+            get { return imageSize; }
+            set
+            {
+                imageSize = value;
+                Refresh();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("Specifies whether the image should be stretched to fit the specified size.")]
+        public bool StretchImage
+        {
+            get { return stretchImage; }
+            set
+            {
+                stretchImage = value;
+                Refresh();
+            }
+        }
+
+
         [Browsable(true)]
         [Category("FourUI")]
         [Description("The default state color.")]
@@ -54,6 +83,34 @@ namespace FourUI
             }
         }
 
+
+        private ImageAlignmentOption imageAlignment = ImageAlignmentOption.Left;
+
+
+        public enum ImageAlignmentOption
+        {
+            Left,
+            Center,
+            Right
+        }
+
+
+
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The alignment of the image on the button.")]
+        public ImageAlignmentOption ImageAlignment
+        {
+            get { return ImageAlignment1; }
+            set
+            {
+                ImageAlignment1 = value;
+                Refresh();
+            }
+        }
+
+
         private Color dontchangethis
         {
             //sorry for doing this, its a workaround i did early indev and now im too scared that ill break something. 😓
@@ -65,24 +122,33 @@ namespace FourUI
             }
         }
 
-        [Browsable(true)]
+        [Browsable(false)]
         [Category("FourUI")]
         [Description("The rounding value.")]
         public int CornerRadius
         {
             get { return cornerRadius; }
+        }
+
+        private Image buttonImage;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The image displayed on the button.")]
+        public Image ButtonImage
+        {
+            get { return buttonImage; }
             set
             {
-                if (value == 0)
-                {
-                    value = 1;
-                }
-                cornerRadius = value;
+                buttonImage = value;
                 Refresh();
             }
         }
 
-        public FourButton()
+
+        public ImageAlignmentOption ImageAlignment1 { get => imageAlignment; set => imageAlignment = value; }
+
+        public FourCircleButton()
         {
             FillColor = Color.FromArgb(32, 32, 32);
             dontchangethis = Color.FromArgb(41, 41, 41);
@@ -241,63 +307,6 @@ namespace FourUI
         }
 
 
-        private ImageAlignmentOption imageAlignment = ImageAlignmentOption.Left;
-
-
-        public enum ImageAlignmentOption
-        {
-            Left,
-            Center,
-            Right
-        }
-
-
-        private Size imageSize = new Size(20, 20);
-        private bool stretchImage = false;
-
-        [Browsable(true)]
-        [Category("FourUI")]
-        [Description("The size of the image displayed on the button.")]
-        public Size ImageSize
-        {
-            get { return imageSize; }
-            set
-            {
-                imageSize = value;
-                Refresh();
-            }
-        }
-
-        [Browsable(true)]
-        [Category("FourUI")]
-        [Description("Specifies whether the image should be stretched to fit the specified size.")]
-        public bool StretchImage
-        {
-            get { return stretchImage; }
-            set
-            {
-                stretchImage = value;
-                Refresh();
-            }
-        }
-
-        private Image buttonImage;
-
-        [Browsable(true)]
-        [Category("FourUI")]
-        [Description("The image displayed on the button.")]
-        public Image ButtonImage
-        {
-            get { return buttonImage; }
-            set
-            {
-                buttonImage = value;
-                Refresh();
-            }
-        }
-
-
-        public ImageAlignmentOption ImageAlignment1 { get => imageAlignment; set => imageAlignment = value; }
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
@@ -320,6 +329,13 @@ namespace FourUI
             {
                 displaySize = new Size(Width - 10, Height - 10);
             }
+
+            cornerRadius = (Height / 2) - 1;
+            if (cornerRadius < 1)
+            {
+                cornerRadius = 1;
+            }
+            MinimumSize = new Size(Height - 1, Height - 1);
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
                 pevent.Graphics.FillRectangle(brush, ClientRectangle);
@@ -327,6 +343,9 @@ namespace FourUI
 
             Rectangle rect = new Rectangle(ClientRectangle.Left, ClientRectangle.Top,
                                ClientRectangle.Width - 1, ClientRectangle.Height - 1);
+
+            Rectangle rect2 = new Rectangle(ClientRectangle.Left + imageX - 4, ClientRectangle.Top,
+                           ClientRectangle.Width - 1, ClientRectangle.Height - 1);
 
             GraphicsPath path = new GraphicsPath();
             int arcSize = 2 * cornerRadius;
@@ -344,11 +363,11 @@ namespace FourUI
                 pevent.Graphics.DrawPath(borderPen, path);
             }
 
-
             using (SolidBrush brush = new SolidBrush(originalColor))
             {
                 pevent.Graphics.FillPath(brush, path);
             }
+
 
             TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
 
@@ -356,9 +375,9 @@ namespace FourUI
             {
                 pevent.Graphics.DrawImage(ButtonImage, new Rectangle(new Point(imageX, (Height - displaySize.Height) / 2), displaySize));
             }
-
-            TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, ForeColor,
+            TextRenderer.DrawText(pevent.Graphics, Text, Font, rect2, ForeColor,
     flag);
+
         }
     }
 }

@@ -46,13 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FourCircleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FourComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FourPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FourStarRating.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FourSlider.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FourSwitch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FourTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FourTextBox.cs">

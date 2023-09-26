@@ -29,7 +29,7 @@ namespace FourUI
                 Invalidate();
             }
         }
-                                  
+
         [Browsable(true)]
         [Category("Appearance")]
         [Description("The color of the panel.")]
@@ -38,7 +38,7 @@ namespace FourUI
             get { return panelColor; }
             set
             {
-    
+
                 panelColor = value;
                 Invalidate();
             }
@@ -51,7 +51,7 @@ namespace FourUI
                 CreateParams cp = base.CreateParams;
                 cp.ExStyle |= 0x20; return cp;
             }
-        } 
+        }
 
         public FourPanel()
         {
@@ -67,8 +67,8 @@ namespace FourUI
 
             int arcSize = cornerRadius * 2;
 
-            Rectangle outerRect = new Rectangle(0-2, 0-3, Width+4, Height-1);
-            Rectangle innerRect = new Rectangle(borderWidth - 1, borderWidth-1, Width - borderWidth * 2 + 2, Height - borderWidth * 2 + 2);
+            Rectangle outerRect = new Rectangle(0 - 2, 0 - 3, Width + 4, Height - 1);
+            Rectangle innerRect = new Rectangle(borderWidth - 1, borderWidth - 1, Width - borderWidth * 2 + 2, Height - borderWidth * 2 + 2);
 
             using (GraphicsPath outerPath = new GraphicsPath())
             using (GraphicsPath innerPath = new GraphicsPath())

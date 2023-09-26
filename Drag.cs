@@ -56,7 +56,7 @@ namespace FourUI
                 await Task.Delay(100);
             }
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1000/ refreshRate;
+            smoothMoveTimer.Interval = 1000 / refreshRate;
             smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
@@ -88,7 +88,7 @@ namespace FourUI
             get { return smoothness; }
             set
             {
-                if (value == 0)
+                if (value < 1)
                 {
                     value = 1;
                 }

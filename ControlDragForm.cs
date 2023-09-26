@@ -9,9 +9,9 @@ namespace FourUI
 {
     public partial class FourControlDrag : Component
     {
-        private Control targetControl; 
-        private bool isDragging = false; 
-        private Point mouseOffset; 
+        private Control targetControl;
+        private bool isDragging = false;
+        private Point mouseOffset;
         private float smoothness = 7f;
         private Timer smoothMoveTimer;
         public FourControlDrag()
@@ -57,7 +57,7 @@ namespace FourUI
             }
 
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1000/refreshRate; 
+            smoothMoveTimer.Interval = 1000 / refreshRate;
             smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
@@ -91,12 +91,14 @@ namespace FourUI
         public float Smoothness
         {
             get { return smoothness; }
-            set {
+            set
+            {
                 if (value == 0)
                 {
                     value = 1;
                 }
-                smoothness = value; }
+                smoothness = value;
+            }
         }
 
         private void TargetControl_MouseDown(object sender, MouseEventArgs e)

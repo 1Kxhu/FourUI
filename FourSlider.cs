@@ -27,7 +27,7 @@ public class FourSlider : Control
     [Browsable(true)]
     [Category("FourUI")]
     [Description("The color of the track.")]
-    public Color TrackColorAfterThumb
+    public Color TrackColor
     {
         get { return trackColorAfterThumb; }
         set { trackColorAfterThumb = value; Invalidate(); }
@@ -171,33 +171,6 @@ public class FourSlider : Control
             Value = ((Value * 2) + newValue) / 3;
             isDragging = true;
         }
-
-        System.Windows.Forms.Timer tickt = new System.Windows.Forms.Timer();
-        tickt.Interval = 1;
-        tickt.Tick += (sendera, ea) =>
-        {
-            thumbSize = 20;
-            thumbRect = new RectangleF((float)((value - minimum) / (double)(maximum - minimum)) * (Width - thumbSize), (Height - thumbSize) / 2, thumbSize, thumbSize);
-            if (isDragging == false)
-            {
-                tickt.Stop();
-            }
-            if (thumbRect.Contains(e.Location))
-            {
-
-            }
-            else
-            {
-                int newValue = (int)(((double)(e.X - thumbSize / 2 - (0 / 20)) / (Width - 20) * (maximum - minimum)) + minimum);
-                Value = ((Value * 2) + newValue) / 3;
-
-            }
-        };
-        tickt.Start();
-
-        Wait(100);
-        tickt.Stop();
-        tickt.Dispose();
     }
 
     private void CustomMetroSlider_MouseUp(object sender, MouseEventArgs e)
