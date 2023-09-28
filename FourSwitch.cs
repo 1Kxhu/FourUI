@@ -20,8 +20,6 @@ namespace FourUI
         private int endX;
         private int thumbWidth;
 
-        int refreshRate = -6;
-
         private designchoice dchoice = FourSwitch.designchoice.Inward;
 
         public enum designchoice
@@ -130,37 +128,11 @@ namespace FourUI
 
 
 
-        private async void InitializeTimer()
+        private void InitializeTimer()
         {
-            //BackColor = Parent.BackColor;
-            refreshRate = -6; //i cant believe that someone ever got -6 fps
-            if (!DesignMode)
-            {
-                try
-                {
-                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-                    foreach (ManagementObject mo in searcher.Get())
-                    {
-                        refreshRate = Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
-                        //MessageBox.Show(refreshRate + " Hz");
-                    }
-                }
-                catch
-                {
-                    refreshRate = 60;
-                }
-            }
-            else
-            {
-                refreshRate = 60;
-            }
 
-            while (refreshRate == -6)
-            {
-                await Task.Delay(100);
-            }
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1000 / refreshRate;
+            smoothMoveTimer.Interval = 4;
             smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
@@ -219,10 +191,11 @@ namespace FourUI
             }
             else if (dchoice == designchoice.Outward)
             {
-                endX = Width - (Height - 10);
-                rectWidth = rectWidth - 1;
+                endX = Width - (Height - 6);
+                rectWidth = rectWidth - 5;
+                rectHeight = rectHeight - 2;
                 cornerRadius = (rectHeight / 6);
-                using (GraphicsPath path = RoundedRectangle(rectX + rectWidth / 10, (rectY + rectHeight / 3) + 1, rectWidth - rectWidth / 10, rectHeight / 3, cornerRadius))
+                using (GraphicsPath path = RoundedRectangle(-1 + rectX + rectWidth / 10, (rectY + rectHeight / 3), rectWidth - rectWidth / 10, 3 + rectHeight / 3, cornerRadius))
                 {
 
                     using (Brush bgBrush = new SolidBrush(trackColor))
@@ -293,14 +266,9 @@ namespace FourUI
         private void AnimateThumb()
         {
             Timer animationTimer = new Timer();
-            if (refreshRate > 1)
-            {
-                animationTimer.Interval = 1000 / refreshRate;
-            }
-            else
-            {
-                animationTimer.Interval = 60;
-            }
+
+            animationTimer.Interval = 4;
+
 
 
 

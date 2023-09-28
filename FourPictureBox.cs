@@ -10,10 +10,10 @@ public class FourPictureBox : Control
     private int _cornerRadius = 5;
     private float _rotationAngle = 0;
     private Matrix _translationMatrix = new Matrix();
-    private bool _displayImage = true;
     public FourPictureBox()
     {
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
+
     }
 
     [Category("FourUI")]
@@ -67,7 +67,7 @@ public class FourPictureBox : Control
     {
         base.OnPaint(e);
 
-        if (_image != null && _displayImage)
+        if (_image != null)
         {
             int diameter = _cornerRadius * 2;
             int offset = 1;
@@ -90,13 +90,13 @@ public class FourPictureBox : Control
                     var scaleX = (float)Width / _image.Width;
                     var scaleY = (float)Height / _image.Height;
 
-                    var matrix = new Matrix();
+                    Matrix matrix = new Matrix();
 
                     matrix.Multiply(_translationMatrix);
 
                     matrix.RotateAt(_rotationAngle, new PointF(Width / 2, Height / 2));
-
                     matrix.Scale(scaleX, scaleY);
+
 
                     brush.Transform = matrix;
                     brush.WrapMode = WrapMode.Clamp;
@@ -105,21 +105,5 @@ public class FourPictureBox : Control
                 }
             }
         }
-    }
-
-    protected override void OnResize(EventArgs e)
-    {
-        base.OnResize(e);
-
-        _displayImage = false;
-        Invalidate();
-    }
-
-    protected override void OnSizeChanged(EventArgs e)
-    {
-        base.OnSizeChanged(e);
-
-        _displayImage = true;
-        Invalidate();
     }
 }

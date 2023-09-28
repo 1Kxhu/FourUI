@@ -55,6 +55,12 @@
     <Compile Include="FourPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FourSpinner.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FourVProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FourStarRating.cs">
       <SubType>Component</SubType>
     </Compile>

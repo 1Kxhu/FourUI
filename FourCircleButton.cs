@@ -335,7 +335,6 @@ namespace FourUI
             {
                 cornerRadius = 1;
             }
-            MinimumSize = new Size(Height - 1, Height - 1);
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
                 pevent.Graphics.FillRectangle(brush, ClientRectangle);

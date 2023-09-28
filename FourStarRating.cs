@@ -6,7 +6,10 @@ using System.Windows.Forms;
 
 public class FourStarRating : Control
 {
-    private float rating = 0.0f; private Color starColor = Color.FromArgb(255, 174, 35);
+    private float rating = 0.0f;
+    private Color starColor = Color.FromArgb(255, 174, 35);
+    private float starBorderSize = 2.0f;
+    private int starCount = 5;
 
     public event EventHandler RatingChanged;
 
@@ -15,14 +18,48 @@ public class FourStarRating : Control
         get { return rating; }
         set
         {
-            if (value < 0.0f)
-                rating = 0.0f;
-            else if (value > 10.0f)
-                rating = 10.0f;
+            if (value <= (starCount * 2))
+            {
+                if (value < 0.0f)
+                    rating = 0.0f;
+                else if (value > 10.0f)
+                    rating = 10.0f;
+                else
+                    rating = value;
+            }
             else
-                rating = value;
+                throw new ArgumentException("Rating must be equal or less than StarCount*2.");
 
             RatingChanged?.Invoke(this, EventArgs.Empty);
+            Invalidate();
+        }
+    }
+
+    public int StarCount
+    {
+        get { return starCount; }
+        set
+        {
+            if (value > 2)   //who is ever finna do a 2 star rating??
+                starCount = value;
+
+            if (starCount * 2 < rating)
+            {
+                rating = starCount * 2;
+                Rating = starCount * 2;
+                RatingChanged?.Invoke(this, EventArgs.Empty);
+                Refresh();
+            }
+            Invalidate();
+        }
+    }
+
+    public float StarBorderSize
+    {
+        get { return starBorderSize; }
+        set
+        {
+            starBorderSize = Math.Max(1, value);
             Invalidate();
         }
     }
@@ -48,14 +85,10 @@ public class FourStarRating : Control
     {
         base.OnPaint(e);
 
-
-
-
-
         Graphics g = e.Graphics;
-        g.InterpolationMode = InterpolationMode.NearestNeighbor; g.SmoothingMode = SmoothingMode.AntiAlias;
+        g.InterpolationMode = InterpolationMode.NearestNeighbor;
+        g.SmoothingMode = SmoothingMode.AntiAlias;
         g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-        int starCount = 5;
         int starWidth = Height - 2;
         int spacing = 5;
 
@@ -76,9 +109,14 @@ public class FourStarRating : Control
                 g.FillRectangle(new SolidBrush(BackColor), starRect);
             }
 
-            g.DrawPath(new Pen(starColor), starPath);
+            // Create a pen with the specified border size
+            using (Pen starBorderPen = new Pen(starColor, StarBorderSize))
+            {
+                g.DrawPath(starBorderPen, starPath);
+            }
         }
     }
+
 
 
 
