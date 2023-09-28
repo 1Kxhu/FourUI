@@ -1,6 +1,6 @@
 ﻿namespace FourUI
 {
-    partial class FourWindowFade
+    partial class FourWindowAnimate
     {
         private System.ComponentModel.IContainer components = null;
 
