@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Drawing;
 using System.Management;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -13,7 +10,6 @@ namespace FourUI
     {
         private Form targetControl; private bool isDragging = false; private Point mouseOffset; private float smoothness = 4f;
         private Timer smoothMoveTimer;
-        int refreshRate = -6;
         public FourDrag()
         {
             InitializeTimer();
@@ -25,38 +21,28 @@ namespace FourUI
             InitializeTimer();
         }
 
-
-
-        private async void InitializeTimer()
+        private int gethz()
         {
-            refreshRate = -6; //i cant believe that someone ever got -6 fps
-            if (!DesignMode)
+            try
             {
-                try
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+                foreach (ManagementObject mo in searcher.Get())
                 {
-                    ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-                    foreach (ManagementObject mo in searcher.Get())
-                    {
-                        refreshRate = Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
-                        //MessageBox.Show(refreshRate + " Hz");
-                    }
-                }
-                catch
-                {
-                    refreshRate = 60;
+                    return Convert.ToInt32(mo["CurrentRefreshRate"]) + 1;
                 }
             }
-            else
+            catch
             {
-                refreshRate = 60;
+                return 60;
             }
+            return 60;
 
-            while (refreshRate == -6)
-            {
-                await Task.Delay(100);
-            }
+        }
+
+        private void InitializeTimer()
+        {
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1000 / refreshRate;
+            smoothMoveTimer.Interval = 1000 / gethz(); ; 
             smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
@@ -88,11 +74,11 @@ namespace FourUI
             get { return smoothness; }
             set
             {
-                if (value < 1)
-                {
-                    value = 1;
-                }
                 smoothness = value;
+                if (smoothness == 0)
+                {
+                    smoothness = 1;
+                }
             }
         }
 

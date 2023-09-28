@@ -8,6 +8,8 @@ public class FourSpinner : Control
     private DateTime lastRenderTime = DateTime.Now;
     private int sweepAngle = 270;
     private int borderSize = 1;
+    private int rotationSpeed = 1;
+
 
     public FourSpinner()
     {
@@ -26,6 +28,19 @@ public class FourSpinner : Control
         {
             if (value > 0 && value <= 360)
                 sweepAngle = value;
+            else
+                throw new ArgumentException("SweepAngle must be between 1 and 360 degrees.");
+        }
+    }
+
+    public int RotationSpeed
+    {
+        get => rotationSpeed;
+
+        set
+        {
+            if (value > 0 && value <= 360)
+                rotationSpeed = value;
             else
                 throw new ArgumentException("SweepAngle must be between 1 and 360 degrees.");
         }
@@ -51,7 +66,7 @@ public class FourSpinner : Control
         int centerX = Width / 2;
         int centerY = Height / 2;
 
-        e.Graphics.TranslateTransform(centerX-1, centerY-1);
+        e.Graphics.TranslateTransform(centerX, centerY);
         e.Graphics.RotateTransform(rotationAngle);
         e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
@@ -65,13 +80,11 @@ public class FourSpinner : Control
         }
     }
 
-    private const float RotationSpeed = 180.0f;
-
     private void Application_Idle(object sender, EventArgs e)
     {
         DateTime currentTime = DateTime.Now;
         double elapsedMilliseconds = (currentTime - lastRenderTime).TotalMilliseconds;
-        float angleChange = (float)(RotationSpeed * elapsedMilliseconds / 900.0);
+        float angleChange = (float)( (RotationSpeed * 90f) * elapsedMilliseconds / 900.0);
         rotationAngle = (rotationAngle + angleChange) % 360;
         lastRenderTime = currentTime;
         Invalidate();

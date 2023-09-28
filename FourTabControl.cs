@@ -15,6 +15,7 @@ public class FourTabControl : TabControl
     public Color TabTextColor { get; set; } = Color.Silver;
     public int widthExtend { get; set; } = 3;
     public int widthInflate { get; set; } = 2;
+    public bool ShowInline { get; set; } = false;
 
     private int hoveredTabIndex = -1;
 
@@ -79,7 +80,14 @@ public class FourTabControl : TabControl
                 LineAlignment = StringAlignment.Center
             });
 
+            /* if (i == SelectedIndex)     <----- this is still in works, a close button. i just wanna push this g
+            {
 
+                Point loc = new Point(tabRect.Right-13, 1+tabRect.Height/3);
+                Rectangle close = new Rectangle(loc, new Size(1+GetTabRect(i).Height/4, 1+GetTabRect(i).Height / 4));
+                e.Graphics.FillPath(new SolidBrush(Color.Red), RoundedRectangle(close, 2));
+
+            }  */
 
 
 
