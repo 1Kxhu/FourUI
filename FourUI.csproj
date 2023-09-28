@@ -78,11 +78,11 @@
     <Compile Include="FourTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WindowFade.cs">
+    <Compile Include="FourWindowAnimate.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WindowFade.Designer.cs">
-      <DependentUpon>WindowFade.cs</DependentUpon>
+    <Compile Include="FourWindowAnimate.Designer.cs">
+      <DependentUpon>FourWindowAnimate.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlDragForm.cs">
       <SubType>Component</SubType>
@@ -103,22 +103,22 @@
       <DependentUpon>FourPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Drag.cs">
+    <Compile Include="FourDrag.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Drag.Designer.cs">
-      <DependentUpon>Drag.cs</DependentUpon>
+    <Compile Include="FourDrag.Designer.cs">
+      <DependentUpon>FourDrag.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Round.cs">
+    <Compile Include="FourRound.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Round.Designer.cs">
-      <DependentUpon>Round.cs</DependentUpon>
+    <Compile Include="FourRound.Designer.cs">
+      <DependentUpon>FourRound.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
