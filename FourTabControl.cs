@@ -80,7 +80,7 @@ public class FourTabControl : TabControl
                 LineAlignment = StringAlignment.Center
             });
 
-            /* if (i == SelectedIndex)     <----- this is still in works, a close button. i just wanna push this g
+            /* if (i == SelectedIndex)     <----- this is still in works, a close button. i just wanna push this bugfix for the drag right now.
             {
 
                 Point loc = new Point(tabRect.Right-13, 1+tabRect.Height/3);
