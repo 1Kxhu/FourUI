@@ -84,7 +84,7 @@ public class FourSpinner : Control
     {
         DateTime currentTime = DateTime.Now;
         double elapsedMilliseconds = (currentTime - lastRenderTime).TotalMilliseconds;
-        float angleChange = (float)( (RotationSpeed * 90f) * elapsedMilliseconds / 900.0);
+        float angleChange = (float)((RotationSpeed * 90f) * elapsedMilliseconds / 900.0);
         rotationAngle = (rotationAngle + angleChange) % 360;
         lastRenderTime = currentTime;
         Invalidate();

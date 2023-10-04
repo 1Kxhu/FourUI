@@ -5,8 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static FourUI.FourCircleButton;
-using static FourUI.FourSwitch;
 
 namespace FourUI
 {
@@ -343,7 +341,7 @@ namespace FourUI
                 displaySize = new Size(Width - 10, Height - 10);
             }
 
-  
+
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
                 pevent.Graphics.FillRectangle(brush, ClientRectangle);

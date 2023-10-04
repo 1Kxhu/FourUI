@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 public class FourComboBox : ComboBox
@@ -84,7 +83,7 @@ public class FourComboBox : ComboBox
 
     private void MetroComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Parent.Focus();
+        _ = Parent.Focus();
         isMouseOver = false;
         expanderrotation = 0;
         Invalidate();

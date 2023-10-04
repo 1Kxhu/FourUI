@@ -1,5 +1,4 @@
-﻿using SkiaSharp;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -136,7 +135,7 @@ public class FourTextBox : Control
 
     private void mouseleave(object sender, EventArgs e)
     {
-        this.Parent.Focus();
+        _ = this.Parent.Focus();
         isFocused = false;
         caretBlinkTimer.Stop();
         this.Invalidate();
@@ -150,7 +149,7 @@ public class FourTextBox : Control
 
     private void mousedown(object sender, EventArgs e)
     {
-        this.Focus();
+        _ = this.Focus();
         isFocused = true;
         caretBlinkTimer.Start();
         this.Invalidate();
@@ -159,7 +158,7 @@ public class FourTextBox : Control
     private void CustomTextBox_Click(object sender, EventArgs e)
     {
         isFocused = true;
-        Focus();
+        _ = Focus();
     }
 
     private void CustomTextBox_GotFocus(object sender, EventArgs e)

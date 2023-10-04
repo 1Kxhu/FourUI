@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Security.Principal;
 using System.Windows.Forms;
 
 public class FourStarRating : Control
@@ -109,7 +108,7 @@ public class FourStarRating : Control
                 g.FillRectangle(new SolidBrush(BackColor), starRect);
             }
 
-                        using (Pen starBorderPen = new Pen(starColor, StarBorderSize))
+            using (Pen starBorderPen = new Pen(starColor, StarBorderSize))
             {
                 g.DrawPath(starBorderPen, starPath);
             }

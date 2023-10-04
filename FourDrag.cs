@@ -42,7 +42,7 @@ namespace FourUI
         private void InitializeTimer()
         {
             smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 1000 / gethz(); ; 
+            smoothMoveTimer.Interval = 1000 / gethz(); ;
             smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
         }
 
