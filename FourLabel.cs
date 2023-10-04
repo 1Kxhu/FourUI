@@ -19,8 +19,6 @@ namespace FourUI
 
         }
 
-        
-
         private textalignment textalignmentenum = textalignment.Left;
         public textalignment TextAlignment { get { return textalignmentenum; } set { textalignmentenum = value; Invalidate(); } }
 
