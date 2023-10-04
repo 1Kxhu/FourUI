@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static FourUI.FourCircleButton;
+using static FourUI.FourSwitch;
 
 namespace FourUI
 {
@@ -14,6 +15,14 @@ namespace FourUI
         private int cornerRadius = 5; private int borderWidth = 2; private Color backColor2 = Color.FromArgb(32, 32, 32); private Color originalOriginalColor;
         private Color originalColor;
         private Color pressCol;
+
+        private designchoice dchoice = designchoice.Filled;
+
+        public enum designchoice
+        {
+            Filled,
+            Outline
+        }
 
         [Browsable(true)]
         [Category("FourUI")]
@@ -25,6 +34,19 @@ namespace FourUI
             {
                 backColor2 = value;
                 Refresh();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The style in which the control displays.")]
+        public designchoice DesignChoice
+        {
+            get { return dchoice; }
+            set
+            {
+                dchoice = value;
+                Invalidate();
             }
         }
 
@@ -320,6 +342,8 @@ namespace FourUI
             {
                 displaySize = new Size(Width - 10, Height - 10);
             }
+
+  
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
                 pevent.Graphics.FillRectangle(brush, ClientRectangle);
@@ -344,10 +368,19 @@ namespace FourUI
                 pevent.Graphics.DrawPath(borderPen, path);
             }
 
-
-            using (SolidBrush brush = new SolidBrush(originalColor))
+            if (DesignChoice == designchoice.Filled)
             {
-                pevent.Graphics.FillPath(brush, path);
+                using (SolidBrush brush = new SolidBrush(originalColor))
+                {
+                    pevent.Graphics.FillPath(brush, path);
+                }
+            }
+            else
+            {
+                using (Pen pen = new Pen(originalColor, 1.1f))
+                {
+                    pevent.Graphics.DrawPath(pen, path);
+                }
             }
 
             TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;

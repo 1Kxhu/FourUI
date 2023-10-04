@@ -111,6 +111,29 @@ namespace FourUI
         }
 
 
+        private designchoice dchoice = designchoice.Filled;
+
+        public enum designchoice
+        {
+            Filled,
+            Outline
+        }
+
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The style in which the control displays.")]
+        public designchoice DesignChoice
+        {
+            get { return dchoice; }
+            set
+            {
+                dchoice = value;
+                Invalidate();
+            }
+        }
+
+
         private Color dontchangethis
         {
             //sorry for doing this, its a workaround i did early indev and now im too scared that ill break something. 😓
@@ -330,7 +353,7 @@ namespace FourUI
                 displaySize = new Size(Width - 10, Height - 10);
             }
 
-            cornerRadius = (Height / 2) - 1;
+            cornerRadius = (Height / 2) - 2;
             if (cornerRadius < 1)
             {
                 cornerRadius = 1;
@@ -362,9 +385,19 @@ namespace FourUI
                 pevent.Graphics.DrawPath(borderPen, path);
             }
 
-            using (SolidBrush brush = new SolidBrush(originalColor))
+            if (DesignChoice == designchoice.Filled)
             {
-                pevent.Graphics.FillPath(brush, path);
+                using (SolidBrush brush = new SolidBrush(originalColor))
+                {
+                    pevent.Graphics.FillPath(brush, path);
+                }
+            }
+            else
+            {
+                using (Pen pen = new Pen(originalColor, 1.25f))
+                {
+                    pevent.Graphics.DrawPath(pen, path);
+                }
             }
 
 

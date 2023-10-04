@@ -109,8 +109,7 @@ public class FourStarRating : Control
                 g.FillRectangle(new SolidBrush(BackColor), starRect);
             }
 
-            // Create a pen with the specified border size
-            using (Pen starBorderPen = new Pen(starColor, StarBorderSize))
+                        using (Pen starBorderPen = new Pen(starColor, StarBorderSize))
             {
                 g.DrawPath(starBorderPen, starPath);
             }
