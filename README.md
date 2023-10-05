@@ -11,6 +11,7 @@ FourUI aims to recreate the smoothness of WPF by applying various tricks and wor
 - Form Rounding: Create rounded forms for a sleek and modern design.
 - Smooth Form Drag: Experience a never-seen smooth dragging functionality.
 - Customizable Components: Customize buttons, switches, panels and more to fit your application's needs.
+- Custom controls, also customizable!
 
 # Frequently Asked Questions (FAQ)
 
