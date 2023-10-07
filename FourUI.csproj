@@ -30,12 +30,23 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
+<PropertyGroup>
+  <NuGetPackExe>nuget.exe</NuGetPackExe>
+</PropertyGroup>
+<Target Name="Pack">
   <PropertyGroup>
-  <PackageId>FourUI.Winforms</PackageId>
-  <Version>1.0.0</Version>
-  <Authors>itzkxhu</Authors>
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <PackageId>FourUI.Winforms</PackageId>
+    <Authors>itzkxhu</Authors>
+    <Description>A Modern Winforms UI Framework.</Description>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(OutputPath)\FourUI.dll" Pack="true" />
+  </ItemGroup>
+  <Exec Command="$(NuGetPackExe) pack $(PackageId).nuspec" />
+</Target>
+
+
 
 
   <ItemGroup>
