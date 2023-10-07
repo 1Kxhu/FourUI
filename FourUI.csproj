@@ -30,6 +30,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
+  <PropertyGroup>
+  <PackageId>FourUI.Winforms</PackageId>
+  <Version>1.0.0</Version>
+  <Authors>itzkxhu</Authors>
+  </PropertyGroup>
+
+
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -48,68 +56,68 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FourCircleButton.cs">
+    <Compile Include="Controls\FourCircleButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourComboBox.cs">
+    <Compile Include="Controls\FourComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourLabel.cs">
+    <Compile Include="Controls\FourLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourPictureBox.cs">
+    <Compile Include="Controls\FourPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourSpinner.cs">
+    <Compile Include="Controls\FourSpinner.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourVProgressBar.cs">
+    <Compile Include="Controls\FourVProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourStarRating.cs">
+    <Compile Include="Controls\FourStarRating.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourSlider.cs">
+    <Compile Include="Controls\FourSlider.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourSwitch.cs">
+    <Compile Include="Controls\FourSwitch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourTabControl.cs">
+    <Compile Include="Controls\FourTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourTextBox.cs">
+    <Compile Include="Controls\FourTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourWindowAnimate.cs">
+    <Compile Include="Components\FourWindowAnimate.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourWindowAnimate.Designer.cs">
+    <Compile Include="Components\FourWindowAnimate.Designer.cs">
       <DependentUpon>FourWindowAnimate.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlDragForm.cs">
+    <Compile Include="Components\ControlDragForm.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ControlDragForm.Designer.cs">
+    <Compile Include="Components\ControlDragForm.Designer.cs">
       <DependentUpon>ControlDragForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FourButton.cs">
+    <Compile Include="Controls\FourButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourGradientPanel.cs">
+    <Compile Include="Controls\FourGradientPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourPanel.cs">
+    <Compile Include="Controls\FourPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourPanel.Designer.cs">
+    <Compile Include="Controls\FourPanel.Designer.cs">
       <DependentUpon>FourPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FourDrag.cs">
+    <Compile Include="Components\FourDrag.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourDrag.Designer.cs">
+    <Compile Include="Components\FourDrag.Designer.cs">
       <DependentUpon>FourDrag.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -117,10 +125,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="FourRound.cs">
+    <Compile Include="Components\FourRound.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FourRound.Designer.cs">
+    <Compile Include="Components\FourRound.Designer.cs">
       <DependentUpon>FourRound.cs</DependentUpon>
     </Compile>
   </ItemGroup>
