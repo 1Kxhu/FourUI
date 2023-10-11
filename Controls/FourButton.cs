@@ -125,7 +125,8 @@ namespace FourUI
             SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
-        private CancellationTokenSource cancellationTokenSource; private async void MouseClickEvent(object sender, EventArgs e)
+        private CancellationTokenSource cancellationTokenSource;
+        private async void MouseClickEvent(object sender, EventArgs e)
         {
 
             if (_buttonmode == ButtonModeEnum.Default)
@@ -171,6 +172,14 @@ namespace FourUI
 
                     for (int i = 1; i <= steps; i++)
                     {
+                        if (!hovering)
+                        {
+                            originalColor = originalOriginalColor;
+                            break;
+     
+
+                        }
+
                         if (ClientRectangle.Contains(mousePosition))
                         {
                             int newR = originalColor.R + deltaR;
@@ -200,7 +209,11 @@ namespace FourUI
                         }
                     }
 
-                    Invalidate();
+                    if (!hovering)
+                    {
+                        originalColor = originalOriginalColor;
+                    }
+                        Invalidate();
                 }
                 catch
                 {
@@ -210,62 +223,23 @@ namespace FourUI
             {
                 Checked = !Checked;
             }
+         
         }
+
+        bool hovering = false;
 
         private void MouseLeaveEvent(object sender, EventArgs e)
         {
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource = null;
-
-            int steps = 15; int delay = 1;
-            int deltaR = (originalOriginalColor.R - originalColor.R) / steps;
-            int deltaG = (originalOriginalColor.G - originalColor.G) / steps;
-            int deltaB = (originalOriginalColor.B - originalColor.B) / steps;
-
-            for (int i = 1; i <= steps; i++)
-            {
-                int newR = originalColor.R + deltaR;
-                int newG = originalColor.G + deltaG;
-                int newB = originalColor.B + deltaB;
-
-                originalColor = Color.FromArgb(newR, newG, newB); Invalidate(); Application.DoEvents();
-                Thread.Sleep(delay);
-
-                if (i != steps)
-                {
-                    deltaR = (originalOriginalColor.R - originalColor.R) / (steps - i);
-                    deltaG = (originalOriginalColor.G - originalColor.G) / (steps - i);
-                    deltaB = (originalOriginalColor.B - originalColor.B) / (steps - i);
-                }
-            }
-
-            originalColor = originalOriginalColor; Invalidate();
+            originalColor = originalOriginalColor;
+            Invalidate();
+            hovering = false;
         }
 
         private void MouseEnterEvent(object sender, EventArgs e)
         {
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource = null;
-
-            Color targetColor = backColor2; int steps = 7; int delay = 1;
-            int deltaR = (targetColor.R - originalColor.R) / steps;
-            int deltaG = (targetColor.G - originalColor.G) / steps;
-            int deltaB = (targetColor.B - originalColor.B) / steps;
-
-            Point mousePosition = PointToClient(MousePosition);
-
-            for (int i = 1; i <= steps && ClientRectangle.Contains(mousePosition); i++)
-            {
-                mousePosition = PointToClient(MousePosition);
-                int newR = originalColor.R + deltaR;
-                int newG = originalColor.G + deltaG;
-                int newB = originalColor.B + deltaB;
-
-                originalColor = Color.FromArgb(newR, newG, newB); Invalidate(); Application.DoEvents();
-                Thread.Sleep(delay);
-            }
-
+            originalColor = backColor2;
             Invalidate();
+            hovering = true;
         }
 
 
