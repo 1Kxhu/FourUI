@@ -30,25 +30,21 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-<PropertyGroup>
-  <NuGetPackExe>nuget.exe</NuGetPackExe>
-</PropertyGroup>
-<Target Name="Pack">
   <PropertyGroup>
-    <OutputPath>bin\$(Configuration)</OutputPath>
-    <PackageId>FourUI.Winforms</PackageId>
-    <Authors>itzkxhu</Authors>
-    <Description>A Modern Winforms UI Framework.</Description>
+    <NuGetPackExe>nuget.exe</NuGetPackExe>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include="$(OutputPath)\FourUI.dll" Pack="true" />
-  </ItemGroup>
-  <Exec Command="$(NuGetPackExe) pack $(PackageId).nuspec" />
-</Target>
-
-
-
-
+  <Target Name="Pack">
+    <PropertyGroup>
+      <OutputPath>bin\$(Configuration)</OutputPath>
+      <PackageId>FourUI.Winforms</PackageId>
+      <Authors>itzkxhu</Authors>
+      <Description>A Modern Winforms UI Framework.</Description>
+    </PropertyGroup>
+    <ItemGroup>
+      <None Include="$(OutputPath)\FourUI.dll" Pack="true" />
+    </ItemGroup>
+    <Exec Command="$(NuGetPackExe) pack $(PackageId).nuspec" />
+  </Target>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -67,7 +63,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\FourCircleButton.cs">
+    <Compile Include="Components\FourBorder.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FourComboBox.cs">

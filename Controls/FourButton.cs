@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.Design;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -114,97 +115,104 @@ namespace FourUI
 
             ForeColor = Color.White;
             Font = new Font("Microsoft Yahei UI", 10, FontStyle.Regular);
-            Text = "Text";
             Size = new Size(130, 40);
 
-            MouseEnter += CustomButton_MouseEnter;
-            MouseLeave += CustomButton_MouseLeave;
-            MouseClick += Ye;
+            MouseEnter += MouseEnterEvent;
+            MouseLeave += MouseLeaveEvent;
+            MouseClick += MouseClickEvent;
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             SetStyle(ControlStyles.Opaque, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
-        private CancellationTokenSource cancellationTokenSource; private async void Ye(object sender, EventArgs e)
+        private CancellationTokenSource cancellationTokenSource; private async void MouseClickEvent(object sender, EventArgs e)
         {
-            cancellationTokenSource?.Cancel();
-            cancellationTokenSource = new CancellationTokenSource();
 
-            try
+            if (_buttonmode == ButtonModeEnum.Default)
             {
-                originalColor = pressCol; int steps = 15; int delay = 1;
-                int deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
-                int deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
-                int deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
+                cancellationTokenSource?.Cancel();
+                cancellationTokenSource = new CancellationTokenSource();
 
-                originalColor = pressCol;
-                Invalidate();
-                Application.DoEvents();
-
-                Point mousePosition = PointToClient(MousePosition);
-                while (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
+                try
                 {
-                    mousePosition = PointToClient(MousePosition);
-                    int newR = originalColor.R + deltaR;
-                    int newG = originalColor.G + deltaG;
-                    int newB = originalColor.B + deltaB;
+                    originalColor = pressCol; int steps = 15; int delay = 1;
+                    int deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
+                    int deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
+                    int deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
 
-                    originalColor = Color.FromArgb(newR, newG, newB); Invalidate(); Application.DoEvents();
-                    await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationTokenSource.Token);
-                    if (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
+                    originalColor = pressCol;
+                    Invalidate();
+                    Application.DoEvents();
+
+                    Point mousePosition = PointToClient(MousePosition);
+                    while (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
                     {
-                        if (steps > 1)
-                        {
-                            deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - 1));
-                            deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - 1));
-                            deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - 1));
-                        }
-                    }
-                }
-
-                deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
-                deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
-                deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
-
-                for (int i = 1; i <= steps; i++)
-                {
-                    if (ClientRectangle.Contains(mousePosition))
-                    {
+                        mousePosition = PointToClient(MousePosition);
                         int newR = originalColor.R + deltaR;
                         int newG = originalColor.G + deltaG;
                         int newB = originalColor.B + deltaB;
 
-                        originalColor = Color.FromArgb(newR, newG, newB); Invalidate();
-                        try
+                        originalColor = Color.FromArgb(newR, newG, newB); Invalidate(); Application.DoEvents();
+                        await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationTokenSource.Token);
+                        if (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
                         {
-                            if (cancellationTokenSource != null && cancellationTokenSource.Token != null && !cancellationTokenSource.IsCancellationRequested)
-                                await Task.Delay(delay, cancellationTokenSource.Token);
-                        }
-                        catch
-                        {
-                        }
-
-                        if (i != steps)
-                        {
-                            deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - i));
-                            deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - i));
-                            deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - i));
+                            if (steps > 1)
+                            {
+                                deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - 1));
+                                deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - 1));
+                                deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - 1));
+                            }
                         }
                     }
-                    else
+
+                    deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
+                    deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
+                    deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
+
+                    for (int i = 1; i <= steps; i++)
                     {
-                        break;
-                    }
-                }
+                        if (ClientRectangle.Contains(mousePosition))
+                        {
+                            int newR = originalColor.R + deltaR;
+                            int newG = originalColor.G + deltaG;
+                            int newB = originalColor.B + deltaB;
 
-                Invalidate();
+                            originalColor = Color.FromArgb(newR, newG, newB); Invalidate();
+                            try
+                            {
+                                if (cancellationTokenSource != null && cancellationTokenSource.Token != null && !cancellationTokenSource.IsCancellationRequested)
+                                    await Task.Delay(delay, cancellationTokenSource.Token);
+                            }
+                            catch
+                            {
+                            }
+
+                            if (i != steps)
+                            {
+                                deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - i));
+                                deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - i));
+                                deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - i));
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    Invalidate();
+                }
+                catch
+                {
+                }
             }
-            catch
+            else
             {
+                Checked = !Checked;
             }
         }
 
-        private void CustomButton_MouseLeave(object sender, EventArgs e)
+        private void MouseLeaveEvent(object sender, EventArgs e)
         {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
@@ -234,7 +242,7 @@ namespace FourUI
             originalColor = originalOriginalColor; Invalidate();
         }
 
-        private void CustomButton_MouseEnter(object sender, EventArgs e)
+        private void MouseEnterEvent(object sender, EventArgs e)
         {
             cancellationTokenSource?.Cancel();
             cancellationTokenSource = null;
@@ -262,6 +270,22 @@ namespace FourUI
 
 
         private ImageAlignmentOption imageAlignment = ImageAlignmentOption.Left;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        public ImageAlignmentOption ImageAlignment
+        {
+            get { return imageAlignment; }
+            set
+            {
+                if (imageAlignment != value)
+                {
+                    imageAlignment = value;
+                    Invalidate();
+                }
+            }
+        }
+
 
 
         public enum ImageAlignmentOption
@@ -316,15 +340,29 @@ namespace FourUI
             }
         }
 
+        private Point imgoffset = new Point(0, 0);
 
-        public ImageAlignmentOption ImageAlignment1 { get => imageAlignment; set => imageAlignment = value; }
+        [Browsable(true)]
+        [Category("FourUI")]
+        public Point ImageOffset
+        {
+            get
+            {
+                return imgoffset;
+            }
+            set
+            {
+                imgoffset = value;
+                Invalidate();
+            }
+        }
 
         protected override void OnPaint(PaintEventArgs pevent)
         {
             int imageX;
             if (imageAlignment == ImageAlignmentOption.Left)
             {
-                imageX = Width / 14;
+                imageX = 5;
             }
             else if (imageAlignment == ImageAlignmentOption.Center)
             {
@@ -341,55 +379,196 @@ namespace FourUI
                 displaySize = new Size(Width - 10, Height - 10);
             }
 
+            imageX += ImageOffset.X;
+
 
             using (SolidBrush brush = new SolidBrush(Parent.BackColor))
             {
                 pevent.Graphics.FillRectangle(brush, ClientRectangle);
             }
 
-            Rectangle rect = new Rectangle(ClientRectangle.Left, ClientRectangle.Top,
-                               ClientRectangle.Width - 1, ClientRectangle.Height - 1);
-
-            GraphicsPath path = new GraphicsPath();
-            int arcSize = 2 * cornerRadius;
-
-            path.AddArc(rect.Left, rect.Top, arcSize, arcSize, 180, 90);
-            path.AddArc(rect.Right - arcSize, rect.Top, arcSize, arcSize, 270, 90);
-            path.AddArc(rect.Right - arcSize, rect.Bottom - arcSize, arcSize, arcSize, 0, 90);
-            path.AddArc(rect.Left, rect.Bottom - arcSize, arcSize, arcSize, 90, 90);
-
-            path.CloseFigure();
-
-            using (Pen borderPen = new Pen(this.BackColor, borderWidth + 74))
+            if (_buttonmode == ButtonModeEnum.CheckButton && Checked)
             {
-                pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                pevent.Graphics.DrawPath(borderPen, path);
-            }
+                Rectangle rect = new Rectangle(ClientRectangle.Left, ClientRectangle.Top,
+                                   ClientRectangle.Width - 1, ClientRectangle.Height - 1);
 
-            if (DesignChoice == designchoice.Filled)
-            {
-                using (SolidBrush brush = new SolidBrush(originalColor))
+                GraphicsPath path = new GraphicsPath();
+                int arcSize = 2 * cornerRadius;
+
+                path.AddArc(rect.Left, rect.Top, arcSize, arcSize, 180, 90);
+                path.AddArc(rect.Right - arcSize, rect.Top, arcSize, arcSize, 270, 90);
+                path.AddArc(rect.Right - arcSize, rect.Bottom - arcSize, arcSize, arcSize, 0, 90);
+                path.AddArc(rect.Left, rect.Bottom - arcSize, arcSize, arcSize, 90, 90);
+
+                path.CloseFigure();
+
+                using (Pen borderPen = new Pen(this.BackColor, borderWidth + 74))
                 {
-                    pevent.Graphics.FillPath(brush, path);
+                    pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    pevent.Graphics.DrawPath(borderPen, path);
                 }
+
+                if (DesignChoice == designchoice.Filled)
+                {
+                    using (SolidBrush brush = new SolidBrush(CheckedFillColor))
+                    {
+                        pevent.Graphics.FillPath(brush, path);
+                    }
+                }
+                else
+                {
+                    using (Pen pen = new Pen(CheckedFillColor, 1.1f))
+                    {
+                        pevent.Graphics.DrawPath(pen, path);
+                    }
+                }
+
+                TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+
+                if (checkedbuttonImage != null)
+                {
+                    pevent.Graphics.DrawImage(checkedbuttonImage, new Rectangle(new Point(imageX, ImageOffset.Y + (Height - displaySize.Height) / 2), displaySize));
+                }
+
+
+                TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, CheckedForeColor,
+
+    flag);
             }
             else
             {
-                using (Pen pen = new Pen(originalColor, 1.1f))
+
+                Rectangle rect = new Rectangle(ClientRectangle.Left, ClientRectangle.Top,
+                                   ClientRectangle.Width - 1, ClientRectangle.Height - 1);
+
+                GraphicsPath path = new GraphicsPath();
+                int arcSize = 2 * cornerRadius;
+
+                path.AddArc(rect.Left, rect.Top, arcSize, arcSize, 180, 90);
+                path.AddArc(rect.Right - arcSize, rect.Top, arcSize, arcSize, 270, 90);
+                path.AddArc(rect.Right - arcSize, rect.Bottom - arcSize, arcSize, arcSize, 0, 90);
+                path.AddArc(rect.Left, rect.Bottom - arcSize, arcSize, arcSize, 90, 90);
+
+                path.CloseFigure();
+
+                using (Pen borderPen = new Pen(this.BackColor, borderWidth + 74))
                 {
-                    pevent.Graphics.DrawPath(pen, path);
+                    pevent.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    pevent.Graphics.DrawPath(borderPen, path);
+                }
+
+                if (DesignChoice == designchoice.Filled)
+                {
+                    using (SolidBrush brush = new SolidBrush(originalColor))
+                    {
+                        pevent.Graphics.FillPath(brush, path);
+                    }
+                }
+                else
+                {
+                    using (Pen pen = new Pen(originalColor, 1.1f))
+                    {
+                        pevent.Graphics.DrawPath(pen, path);
+                    }
+                }
+
+                TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+
+                if (ButtonImage != null)
+                {
+                    pevent.Graphics.DrawImage(ButtonImage, new Rectangle(new Point(imageX, ImageOffset.Y + (Height - displaySize.Height) / 2), displaySize));
+                }
+
+
+                TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, ForeColor,
+
+    flag);
+            }
+        }
+
+        private ButtonModeEnum _buttonmode { get; set; } = ButtonModeEnum.Default;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        public ButtonModeEnum ButtonMode
+        {
+            get => _buttonmode;
+            set
+            {
+
+                _buttonmode = value;
+                Invalidate();
+            }
+        }
+
+        public enum ButtonModeEnum
+        {
+            Default,
+            CheckButton
+        }
+
+        private bool _checked = false;
+
+        [Category("FourUI")]
+        public bool Checked
+        {
+            get => _checked;
+            set
+            {
+                if (_checked != value)
+                {
+                    _checked = value;
+                    Invalidate();
                 }
             }
-
-            TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-
-            if (ButtonImage != null)
-            {
-                pevent.Graphics.DrawImage(ButtonImage, new Rectangle(new Point(imageX, (Height - displaySize.Height) / 2), displaySize));
-            }
-
-            TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, ForeColor,
-    flag);
         }
+
+        private Color _checkedForeColor = Color.White;
+
+        [Category("FourUI")]
+        public Color CheckedForeColor
+        {
+            get => _checkedForeColor;
+            set
+            {
+                if (_checkedForeColor != value)
+                {
+                    _checkedForeColor = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        private Color _checkedFillColor = Color.FromArgb(28, 131, 255);
+
+        [Category("FourUI")]
+        public Color CheckedFillColor
+        {
+            get => _checkedFillColor;
+            set
+            {
+                if (_checkedFillColor != value)
+                {
+                    _checkedFillColor = value;
+                    Invalidate();
+                }
+            }
+        }
+
+        private Image checkedbuttonImage;
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The image displayed on the button when checked.")]
+        public Image CheckedButtonImage
+        {
+            get { return checkedbuttonImage; }
+            set
+            {
+                checkedbuttonImage = value;
+                Refresh();
+            }
+        }
+
     }
 }
