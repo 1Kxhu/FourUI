@@ -26,3 +26,6 @@ FourUI provides highly customizable controls and components, including various a
 
 ### **Why trust FourUI?**
 FourUI is developed by itzkxhu(me) and I am not the type of person who'd randomly switch sides.
+
+*some code is taken from stackoverflow, for example the slider, or the button.
+*however i try replacing that code with my own as time goes on!
