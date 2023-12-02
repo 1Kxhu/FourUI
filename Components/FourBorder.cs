@@ -10,23 +10,10 @@ namespace FourUI
     public partial class FourBorder : Component
     {
         private Form targetForm;
-        private int borderWidth = 1; private Color borderColor = Color.Red; private int borderRadius = 5;
+        private int borderWidth = 1; 
+        private Color borderColor = Color.Red; 
+        private int borderRadius = 5;
 
-        public FourBorder()
-        {
-            InitializeComponent();
-        }
-
-        public FourBorder(IContainer container)
-        {
-            container.Add(this);
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            Disposed += FourBorder_Disposed;
-        }
 
         [Browsable(true)]
         [Category("FourUI")]
@@ -46,7 +33,7 @@ namespace FourUI
 
         [Browsable(true)]
         [Description("Select the target form to apply the border.")]
-        [Category("Behavior")]
+        [Category("FourUI")]
         public Form TargetForm
         {
             get { return targetForm; }
@@ -54,18 +41,66 @@ namespace FourUI
             {
                 if (value != null && value != targetForm)
                 {
+                    targetForm = value;
                     if (targetForm != null)
                     {
                         targetForm.Paint -= TargetForm_Paint;
                         targetForm.Resize -= TargetForm_Resize;
                         targetForm.Invalidate();
                     }
-
-                    targetForm = value;
                     targetForm.Paint += TargetForm_Paint;
                     targetForm.Resize += TargetForm_Resize;
                 }
             }
+        }
+
+
+        [Browsable(true)]
+        [Description("Set the border width.")]
+        [Category("FourUI")]
+        public int BorderWidth
+        {
+            get { return borderWidth; }
+            set
+            {
+                borderWidth = value;
+                if (targetForm != null)
+                {
+                    targetForm.Invalidate();
+                }
+            }
+        }
+
+        [Browsable(true)]
+        [Description("Set the border color.")]
+        [Category("FourUI")]
+        public Color BorderColor
+        {
+            get { return borderColor; }
+            set
+            {
+                borderColor = value;
+                if (targetForm != null)
+                {
+                    targetForm.Invalidate();
+                }
+            }
+        }
+
+        public FourBorder()
+        {
+            InitializeComponent();
+        }
+
+        public FourBorder(IContainer container)
+        {
+            container.Add(this);
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            Disposed += FourBorder_Disposed;
         }
 
         private GraphicsPath RoundedRectangle(int x, int y, int width, int height, int radius)
@@ -123,38 +158,6 @@ namespace FourUI
                 targetForm.Paint -= TargetForm_Paint;
                 targetForm.Resize -= TargetForm_Resize;
                 targetForm.Invalidate();
-            }
-        }
-
-        [Browsable(true)]
-        [Description("Set the border width.")]
-        [Category("Appearance")]
-        public int BorderWidth
-        {
-            get { return borderWidth; }
-            set
-            {
-                borderWidth = value;
-                if (targetForm != null)
-                {
-                    targetForm.Invalidate();
-                }
-            }
-        }
-
-        [Browsable(true)]
-        [Description("Set the border color.")]
-        [Category("Appearance")]
-        public Color BorderColor
-        {
-            get { return borderColor; }
-            set
-            {
-                borderColor = value;
-                if (targetForm != null)
-                {
-                    targetForm.Invalidate();
-                }
             }
         }
     }

@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace FourUI
@@ -11,26 +10,9 @@ namespace FourUI
     {
         private Form targetForm;
         private int cornerRadius = 4;
-        private bool isResizing = false;
 
         public FourRound()
         {
-
-        }
-
-        public void Wait(int time)
-        {
-            Thread thread = new Thread(delegate ()
-            {
-                System.Threading.Thread.Sleep(time);
-                isResizing = true;
-            });
-            thread.Start();
-            while (thread.IsAlive)
-            {
-                Application.DoEvents();
-            }
-            isResizing = false;
 
         }
 
@@ -40,32 +22,17 @@ namespace FourUI
         }
 
         [Browsable(true)]
-        [DefaultValue(5)]
+        [DefaultValue(4)]
         public int CornerRadius
         {
             get { return cornerRadius; }
             set
             {
-
                 if (value == 0)
                 {
                     value = 1;
                 }
                 cornerRadius = value;
-                if (targetForm != null)
-                {
-                    SetRoundedCorners(targetForm, cornerRadius);
-                    targetForm.Invalidate();
-                }
-            }
-        }
-
-        [Browsable(false)]
-        public Color DontChangeThis
-        {
-            get { return fillColor; }
-            set
-            {
                 if (targetForm != null)
                 {
                     SetRoundedCorners(targetForm, cornerRadius);
@@ -91,21 +58,17 @@ namespace FourUI
                 {
                     targetForm.Load += TargetForm_Load;
                     targetForm.BackColorChanged += TargetForm_BackColorChanged;
-                    targetForm.Resize += TargetForm_Resize;
+                    targetForm.ResizeEnd += ResizeEnd;
                     targetForm.ImeMode = ImeMode.Off;
+                    targetForm.Invalidate();
                 }
             }
         }
 
-        private void TargetForm_Resize(object sender, EventArgs e)
+        private void ResizeEnd(object sender, EventArgs e)
         {
-            if (!isResizing)
-            {
-                Wait(35);
-
-                SetRoundedCorners(targetForm, cornerRadius);
-                targetForm.Invalidate();
-            }
+            SetRoundedCorners(targetForm, cornerRadius);
+            targetForm.Invalidate();
         }
 
 

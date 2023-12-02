@@ -39,7 +39,7 @@ namespace FourUI
 
         [Browsable(true)]
         [Category("FourUI")]
-        [Description("The way in which the gradient goes")]
+        [Description("The way in which the gradient flows.")]
         public SelectionOption UserChoice
         {
             get => selection;
@@ -59,7 +59,8 @@ namespace FourUI
 
         public FourGradientPanel()
         {
-            DoubleBuffered = true; SetStyle(ControlStyles.ResizeRedraw, true);
+            DoubleBuffered = true; 
+            SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
         protected override void OnPaint(PaintEventArgs e)

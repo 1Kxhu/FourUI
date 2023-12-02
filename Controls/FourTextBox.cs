@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FourUI;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 public class FourTextBox : Control
 {
     private string text = string.Empty;
+    private string placeholderText = string.Empty;
     private bool isFocused = false;
 
     private bool isCaretVisible = true;
@@ -14,6 +16,7 @@ public class FourTextBox : Control
 
     private Color unfocusedbg = Color.FromArgb(21, 21, 21);
     private Color unfocusedborder = Color.FromArgb(41, 41, 41);
+    private Color unfocusedtext = Color.DimGray;
 
     private Color focusedbg = Color.FromArgb(31, 31, 31);
     private Color focusedborder = Color.FromArgb(51, 51, 51);
@@ -24,6 +27,24 @@ public class FourTextBox : Control
 
     int borderRadius = 5;
     int borderSize = 1;
+
+    [Browsable(true)]
+    [Category("FourUI")]
+    [Description("The radius of the rounding.")]
+    public string PlaceholderText
+    {
+        get { return placeholderText; }
+        set { placeholderText = value; Invalidate(); }
+    }
+
+    [Browsable(true)]
+    [Category("FourUI")]
+    [Description("The radius of the rounding.")]
+    public Color UnfocusedTextColor
+    {
+        get { return unfocusedtext; }
+        set { unfocusedtext = value; Invalidate(); }
+    }
 
     [Browsable(true)]
     [Category("FourUI")]
@@ -109,16 +130,18 @@ public class FourTextBox : Control
         SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 
         this.BackColor = Color.Transparent;
+        this.ForeColor = Color.DimGray;
+        this.UnfocusedTextColor = Color.DimGray;
 
         this.Font = new Font("Segoe UI", 12f);
         this.Size = new Size(200, 30);
 
-        this.Click += CustomTextBox_Click;
-        this.GotFocus += CustomTextBox_GotFocus;
-        this.LostFocus += CustomTextBox_LostFocus;
-        this.KeyPress += CustomTextBox_KeyPress;
-        this.MouseLeave += mouseleave;
-        this.MouseDown += mousedown;
+        this.Click += ClickEvent;
+        this.GotFocus += GotFocusEvent;
+        this.LostFocus += LostFocusEvent;
+        this.KeyPress += KeyPressEvent;
+        this.MouseLeave += MouseLeaveEvent;
+        this.MouseDown += MouseDownEvent;
 
         this.TextChanged += textchanged;
 
@@ -133,7 +156,7 @@ public class FourTextBox : Control
         Invalidate();
     }
 
-    private void mouseleave(object sender, EventArgs e)
+    private void MouseLeaveEvent(object sender, EventArgs e)
     {
         _ = this.Parent.Focus();
         isFocused = false;
@@ -147,7 +170,7 @@ public class FourTextBox : Control
         this.Invalidate();
     }
 
-    private void mousedown(object sender, EventArgs e)
+    private void MouseDownEvent(object sender, EventArgs e)
     {
         _ = this.Focus();
         isFocused = true;
@@ -155,26 +178,43 @@ public class FourTextBox : Control
         this.Invalidate();
     }
 
-    private void CustomTextBox_Click(object sender, EventArgs e)
+    private void ClickEvent(object sender, EventArgs e)
     {
         isFocused = true;
         _ = Focus();
     }
 
-    private void CustomTextBox_GotFocus(object sender, EventArgs e)
+    private void GotFocusEvent(object sender, EventArgs e)
     {
         isFocused = true;
         this.Invalidate();
     }
 
-    private void CustomTextBox_LostFocus(object sender, EventArgs e)
+    private void LostFocusEvent(object sender, EventArgs e)
     {
         isFocused = false;
 
         this.Invalidate();
     }
 
-    private void CustomTextBox_KeyPress(object sender, KeyPressEventArgs e)
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (e.Control && e.KeyCode == Keys.V)
+        {
+            if (Clipboard.ContainsText())
+            {
+                string clipboardText = Clipboard.GetText();
+                if (!Text.Contains(Environment.NewLine))
+                {
+                    Text = clipboardText;
+                }
+            }
+        }
+
+        base.OnKeyDown(e);
+    }
+
+    private void KeyPressEvent(object sender, KeyPressEventArgs e)
     {
         if (isFocused)
         {
@@ -207,27 +247,24 @@ public class FourTextBox : Control
     {
         //base.OnPaint(e);
 
-
+        if (unfocusedtext == Color.Empty || unfocusedtext == null)
+        {
+            unfocusedtext = ForeColor;
+        }
 
         Pen caretpen = new Pen(caretcolor);
 
+
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-
-
-
-        using (GraphicsPath path = CreateRoundedRectanglePath(new Rectangle(0 + 1, 0 + 1, Width - 1, Height - 1), borderRadius))
+        using (GraphicsPath path = Helper.RoundedRectangle(new Rectangle(1, 1, Width - 1, Height - 1), borderRadius))
         {
             e.Graphics.FillPath(new SolidBrush(isFocused ? focusedbg : unfocusedbg), path);
             using (Pen borderPen = new Pen(isFocused ? focusedborder : unfocusedborder, BorderSize))
             {
                 e.Graphics.DrawPath(borderPen, path);
             }
-
-
         }
-
-
 
         if (Text == "" && isFocused)
         {
@@ -241,15 +278,15 @@ public class FourTextBox : Control
 
         if (Text == "" && !isFocused)
         {
-            TextRenderer.DrawText(e.Graphics, "Placeholder textbox text.", Font, new Point(5, (Height - Font.Height) / 2), PlaceholderForeColor);
+            TextRenderer.DrawText(e.Graphics, placeholderText, Font, new Point(5, (Height - Font.Height) / 2), PlaceholderForeColor);
         }
-        else
+        if (Text != "" && isFocused)
         {
-
-
             TextRenderer.DrawText(e.Graphics, Text, Font, new Point(5, (Height - Font.Height) / 2), ForeColor);
-
-
+        }
+        if (Text != "" && !isFocused)
+        {
+            TextRenderer.DrawText(e.Graphics, Text, Font, new Point(5, (Height - Font.Height) / 2), UnfocusedTextColor);
         }
 
         if (isFocused)
@@ -261,27 +298,6 @@ public class FourTextBox : Control
             }
         }
     }
-
-
-
-
-    private GraphicsPath CreateRoundedRectanglePath(Rectangle rectangle, int borderRadius)
-    {
-        GraphicsPath path = new GraphicsPath();
-
-        int diameter = borderRadius * 2;
-        Size size = new Size(diameter, diameter);
-        Rectangle arc = new Rectangle(rectangle.Location, size);
-
-        path.AddArc(arc, 180, 90); arc.X = rectangle.Right - diameter - 1;
-        path.AddArc(arc, 270, 90); arc.Y = rectangle.Bottom - diameter - 1;
-        path.AddArc(arc, 0, 90); arc.X = rectangle.Left;
-        path.AddArc(arc, 90, 90);
-        path.CloseFigure();
-
-        return path;
-    }
-
 
     protected override void WndProc(ref Message m)
     {

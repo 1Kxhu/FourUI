@@ -1,6 +1,10 @@
-﻿using System.ComponentModel;
+﻿using FourUI;
+using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 public class FourPictureBox : Control
@@ -9,10 +13,18 @@ public class FourPictureBox : Control
     private int _cornerRadius = 5;
     private float _rotationAngle = 0;
     private Matrix _translationMatrix = new Matrix();
+    private Color borderColor = Color.White;
+    private int borderWidth = 1;
+
     public FourPictureBox()
     {
-        SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
-
+        SetStyle(ControlStyles.DoubleBuffer | ControlStyles.OptimizedDoubleBuffer, true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+        SetStyle(ControlStyles.ResizeRedraw, true);
+        SetStyle(ControlStyles.UserPaint, true);
+        SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+        DoubleBuffered = true;
+        BackColor = Color.Transparent;
     }
 
     [Category("FourUI")]
@@ -23,6 +35,30 @@ public class FourPictureBox : Control
         set
         {
             _image = value;
+            Invalidate();
+        }
+    }
+
+    [Category("FourUI")]
+    [Description("The color of the border.")]
+    public Color BorderColor
+    {
+        get { return borderColor; }
+        set
+        {
+            borderColor = value;
+            Invalidate();
+        }
+    }
+
+    [Category("FourUI")]
+    [Description("The rounding radius.")]
+    public int BorderWidth
+    {
+        get { return borderWidth; }
+        set
+        {
+            borderWidth = value;
             Invalidate();
         }
     }
@@ -62,25 +98,77 @@ public class FourPictureBox : Control
         }
     }
 
+    private GraphicsPath RoundedRectangle(Rectangle rect, int radius)
+    {
+        GraphicsPath path = new GraphicsPath();
+
+        path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180, 90); path.AddArc(rect.Right - 2 * radius, rect.Y, radius * 2, radius * 2, 270, 90); path.AddArc(rect.Right - 2 * radius, rect.Bottom - 2 * radius, radius * 2, radius * 2, 0, 90); path.AddArc(rect.X, rect.Bottom - 2 * radius, radius * 2, radius * 2, 90, 90);
+        path.CloseFigure();
+
+        return path;
+    }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+        try
+        {
+            if (Parent != null)
+            {
+                using (var bmp = new Bitmap(Parent.Width * 2, Parent.Height * 2))
+                {
+                    Parent.Controls.Cast<Control>().Where(c => Parent.Controls.GetChildIndex(c) > Parent.Controls.GetChildIndex(this))
+                        .ToList()
+                        .ForEach(c => c.DrawToBitmap(bmp, new Rectangle(c.Bounds.X - 1, c.Bounds.Y - 1, c.Width + 1, c.Height + 1)));
+
+                    e.Graphics.DrawImage(bmp, -Left, -Top);
+                }
+
+                using (var bmp = new Bitmap(Parent.Width * 2, Parent.Height * 2))
+                {
+                    Parent.Controls.Cast<FourGradientPanel>().Where(c => Parent.Controls.GetChildIndex(c) > Parent.Controls.GetChildIndex(this))
+                        .ToList()
+                        .ForEach(c => c.DrawToBitmap(bmp, new Rectangle(c.Bounds.X - 1, c.Bounds.Y - 1, c.Width + 1, c.Height + 1)));
+
+                    e.Graphics.DrawImage(bmp, -Left, -Top);
+                }
+            }
+            else
+            {
+                base.OnPaintBackground(e);
+            }
+        }
+        catch
+        {
+            base.OnPaintBackground(e);
+        }
+    }
+
     protected override void OnPaint(PaintEventArgs e)
     {
-        base.OnPaint(e);
+        e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        Rectangle crect = ClientRectangle;
+        crect.Inflate(5, 5);
+        crect.Offset(-2, -2);
+
+        if (BackColor != Color.Transparent)
+        {
+            e.Graphics.FillRectangle(new SolidBrush(BackColor), crect);
+        }
 
         if (_image != null)
         {
             int diameter = _cornerRadius * 2;
-            int offset = 1;
 
-            using (var path = new GraphicsPath())
+            Rectangle rawrect = e.ClipRectangle;
+            rawrect.Inflate(-1, -1);
+
+            using (var path = RoundedRectangle(rawrect, CornerRadius))
             {
-                path.AddArc(offset, offset - offset, diameter, diameter, 180, 90);
-                path.AddArc(Width - diameter - offset, offset - offset, diameter, diameter, 270, 90);
-                path.AddArc(Width - diameter - offset, Height - diameter - offset, diameter, diameter, 0, 90);
-                path.AddArc(offset, Height - diameter - offset, diameter, diameter, 90, 90);
-                path.CloseFigure();
+
 
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
+                using (var pen = new Pen(borderColor, BorderWidth))
                 using (var brush = new TextureBrush(_image))
                 {
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -101,6 +189,7 @@ public class FourPictureBox : Control
                     brush.WrapMode = WrapMode.Clamp;
 
                     e.Graphics.FillPath(brush, path);
+                    e.Graphics.DrawPath(pen, path);
                 }
             }
         }

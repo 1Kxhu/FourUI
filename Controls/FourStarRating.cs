@@ -39,8 +39,7 @@ public class FourStarRating : Control
         get { return starCount; }
         set
         {
-            if (value > 2)   //who is ever finna do a 2 star rating??
-                starCount = value;
+            starCount = value;
 
             if (starCount * 2 < rating)
             {
@@ -114,11 +113,6 @@ public class FourStarRating : Control
             }
         }
     }
-
-
-
-
-
 
     public static GraphicsPath GetRounded5PointStarPath(float centerX, float centerY, float outerRadius, float innerRadius, int numPoints)
     {

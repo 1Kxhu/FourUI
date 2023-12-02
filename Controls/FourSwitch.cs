@@ -10,7 +10,8 @@ namespace FourUI
     {
         private Color thumbColorUnchecked = Color.Crimson;
         private Color thumbColorChecked = Color.FromArgb(33, 133, 255);
-        private Color trackColor = Color.FromArgb(21, 21, 21);
+        private Color trackColor = Color.FromArgb(14, 14, 14);
+        private Color borderColor = Color.FromArgb(21, 21, 21);
 
         private bool ischecked = false;
         private int thumbX;
@@ -70,6 +71,19 @@ namespace FourUI
 
         [Browsable(true)]
         [Category("FourUI")]
+        [Description("The color of the border.")]
+        public Color BorderColor
+        {
+            get { return borderColor; }
+            set
+            {
+                borderColor = value;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("FourUI")]
         [Description("The style in which the control displays.")]
         public designchoice DesignChoice
         {
@@ -94,20 +108,14 @@ namespace FourUI
             }
         }
 
-
-
         int animatedThumbX;
-
-
 
         public FourSwitch()
         {
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
-            DoubleBuffered = true;
             SetStyle(ControlStyles.ResizeRedraw, true);
-
-
+            DoubleBuffered = true;
 
             endX = Width - thumbWidth - 5;
 
@@ -120,26 +128,6 @@ namespace FourUI
                 ischecked = !ischecked;
                 AnimateThumb();
             };
-
-            InitializeTimer();
-        }
-
-
-
-        private void InitializeTimer()
-        {
-
-            smoothMoveTimer = new Timer();
-            smoothMoveTimer.Interval = 4;
-            smoothMoveTimer.Tick += SmoothMoveTimer_Tick;
-        }
-
-        private Timer smoothMoveTimer;
-
-
-        private void SmoothMoveTimer_Tick(object sender, EventArgs e)
-        {
-
         }
 
         [Browsable(true)]
@@ -160,31 +148,30 @@ namespace FourUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-
-
-
             int cornerRadius = (Height / 2) - 1;
             int rectX = 0;
             int rectY = 0;
             int rectWidth = Width - 1;
             int rectHeight = Height - 1;
 
-
             thumbWidth = Height - 9;
 
-
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
             if (dchoice == designchoice.Inward)
             {
                 endX = Width - (Height - 9) - 3;
-                using (GraphicsPath path = RoundedRectangle(rectX, rectY, rectWidth, rectHeight, cornerRadius))
+                using (GraphicsPath path = Helper.RoundedRectangleXY(rectX, rectY, rectWidth, rectHeight, cornerRadius))
                 {
-
                     using (Brush bgBrush = new SolidBrush(trackColor))
                     {
                         e.Graphics.FillPath(bgBrush, path);
                     }
 
+                    using (Pen borderPen = new Pen(borderColor))
+                    {
+                        e.Graphics.DrawPath(borderPen, path);
+                    }
                 }
             }
             else if (dchoice == designchoice.Outward)
@@ -193,21 +180,16 @@ namespace FourUI
                 rectWidth = rectWidth - 5;
                 rectHeight = rectHeight - 2;
                 cornerRadius = (rectHeight / 6);
-                using (GraphicsPath path = RoundedRectangle(-1 + rectX + rectWidth / 10, (rectY + rectHeight / 3), rectWidth - rectWidth / 10, 3 + rectHeight / 3, cornerRadius))
+                using (GraphicsPath path = Helper.RoundedRectangleXY(-1 + rectX + rectWidth / 10, (rectY + rectHeight / 3), rectWidth - rectWidth / 10, 3 + rectHeight / 3, cornerRadius))
                 {
-
                     using (Brush bgBrush = new SolidBrush(trackColor))
                     {
                         e.Graphics.FillPath(bgBrush, path);
                     }
-
                 }
             }
 
             animatedThumbX = thumbX;
-
-
-
 
             if (Checked)
             {
@@ -239,27 +221,7 @@ namespace FourUI
             {
                 e.Graphics.FillEllipse(thumbBrush, animatedThumbX, 4, thumbWidth, thumbWidth);
             }
-
         }
-
-
-
-        private GraphicsPath RoundedRectangle(int x, int y, int width, int height, int radius)
-        {
-            GraphicsPath path = new GraphicsPath();
-            int diameter = radius * 2;
-
-            path.StartFigure();
-            path.AddArc(x, y, diameter, diameter, 180, 90);
-            path.AddArc(x + width - diameter, y, diameter, diameter, 270, 90);
-            path.AddArc(x + width - diameter, y + height - diameter, diameter, diameter, 0, 90);
-            path.AddArc(x, y + height - diameter, diameter, diameter, 90, 90);
-
-            path.CloseFigure();
-
-            return path;
-        }
-
 
         private void AnimateThumb()
         {

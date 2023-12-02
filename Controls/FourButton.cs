@@ -4,48 +4,36 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.Design;
 using System.Windows.Forms;
 
 namespace FourUI
 {
     public class FourButton : Button
     {
-        private int cornerRadius = 5; private int borderWidth = 2; private Color backColor2 = Color.FromArgb(32, 32, 32); private Color originalOriginalColor;
-        private Color originalColor;
-        private Color pressCol;
+        private int cornerRadius = 5;
+        private int borderWidth = 1;
 
-        private designchoice dchoice = designchoice.Filled;
+        private Color _UnfocusedborderColor = Color.FromArgb(45, 45, 45);
+        private Color _FocusedborderColor = Color.FromArgb(45, 45, 45);
 
-        public enum designchoice
-        {
-            Filled,
-            Outline
-        }
+
+        private Color _hoverColor = Color.FromArgb(14,14,14);
+        private Color _fillColor = Color.FromArgb(10,10,10);
+        private Color _pressColor = Color.FromArgb(6,6,6);
+
+        private Color currentBorderColor = Color.Empty;
+        private Color currentColor;
 
         [Browsable(true)]
         [Category("FourUI")]
         [Description("The hover color.")]
         public Color HoverColor
         {
-            get { return backColor2; }
+            get { return _hoverColor; }
             set
             {
-                backColor2 = value;
+                _hoverColor = value;
                 Refresh();
-            }
-        }
-
-        [Browsable(true)]
-        [Category("FourUI")]
-        [Description("The style in which the control displays.")]
-        public designchoice DesignChoice
-        {
-            get { return dchoice; }
-            set
-            {
-                dchoice = value;
-                Invalidate();
             }
         }
 
@@ -54,10 +42,10 @@ namespace FourUI
         [Description("The press color.")]
         public Color PressColor
         {
-            get { return pressCol; }
+            get { return _pressColor; }
             set
             {
-                pressCol = value;
+                _pressColor = value;
                 Refresh();
             }
         }
@@ -67,22 +55,11 @@ namespace FourUI
         [Description("The default state color.")]
         public Color FillColor
         {
-            get { return originalColor; }
+            get { return _fillColor; }
             set
             {
-                originalColor = value;
-                Refresh(); originalOriginalColor = value;
-            }
-        }
-
-        private Color dontchangethis
-        {
-            //sorry for doing this, its a workaround i did early indev and now im too scared that ill break something. 😓
-            get { return backColor2; }
-            set
-            {
-                backColor2 = value;
-                Refresh();
+                _fillColor = value;
+                Refresh(); currentColor = value;
             }
         }
 
@@ -103,19 +80,62 @@ namespace FourUI
             }
         }
 
+        [Browsable(true)]
+        [Category("Appearance")]
+        [Description("The color of the border.")]
+        public Color UnfocusedBorderColor
+        {
+            get { return _UnfocusedborderColor; }
+            set
+            {
+
+                _UnfocusedborderColor = value;
+                currentBorderColor = Color.Empty;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("Appearance")]
+        [Description("The color of the border.")]
+        public Color FocusedBorderColor
+        {
+            get { return _FocusedborderColor; }
+            set
+            {
+
+                _FocusedborderColor = value;
+                currentBorderColor = Color.Empty;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("Appearance")]
+        [Description("The color of the border.")]
+        public int BorderWidth
+        {
+            get { return borderWidth; }
+            set
+            {
+
+                borderWidth = value;
+                Invalidate();
+            }
+        }
+
         public FourButton()
         {
-            FillColor = Color.FromArgb(32, 32, 32);
-            dontchangethis = Color.FromArgb(41, 41, 41);
-            pressCol = Color.FromArgb(23, 23, 23);
-            originalOriginalColor = FillColor;
+            currentColor = FillColor;
 
             if (HoverColor.IsEmpty || !HoverColor.IsEmpty)
-                HoverColor = backColor2;
+                HoverColor = _hoverColor;
 
             ForeColor = Color.White;
             Font = new Font("Microsoft Yahei UI", 10, FontStyle.Regular);
             Size = new Size(130, 40);
+
+            ForeColor = Color.FromArgb(100, 100, 100);
 
             MouseEnter += MouseEnterEvent;
             MouseLeave += MouseLeaveEvent;
@@ -128,7 +148,6 @@ namespace FourUI
         private CancellationTokenSource cancellationTokenSource;
         private async void MouseClickEvent(object sender, EventArgs e)
         {
-
             if (_buttonmode == ButtonModeEnum.Default)
             {
                 cancellationTokenSource?.Cancel();
@@ -136,12 +155,15 @@ namespace FourUI
 
                 try
                 {
-                    originalColor = pressCol; int steps = 15; int delay = 1;
-                    int deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
-                    int deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
-                    int deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
+                    _fillColor = _pressColor;
+                    int steps = 15;
+                    int delay = 1;
+                    int deltaR = (int)Math.Round((currentColor.R - _fillColor.R) / (double)steps);
+                    int deltaG = (int)Math.Round((currentColor.G - _fillColor.G) / (double)steps);
+                    int deltaB = (int)Math.Round((currentColor.B - _fillColor.B) / (double)steps);
+                    int deltaA = (int)Math.Round((currentColor.A - _fillColor.A) / (double)steps);
 
-                    originalColor = pressCol;
+                    _fillColor = _pressColor;
                     Invalidate();
                     Application.DoEvents();
 
@@ -149,44 +171,51 @@ namespace FourUI
                     while (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
                     {
                         mousePosition = PointToClient(MousePosition);
-                        int newR = originalColor.R + deltaR;
-                        int newG = originalColor.G + deltaG;
-                        int newB = originalColor.B + deltaB;
+                        int newR = _fillColor.R + deltaR;
+                        int newG = _fillColor.G + deltaG;
+                        int newB = _fillColor.B + deltaB;
+                        int newA = _fillColor.A + deltaA;
 
-                        originalColor = Color.FromArgb(newR, newG, newB); Invalidate(); Application.DoEvents();
+                        _fillColor = Color.FromArgb(newA, newR, newG, newB);
+                        Invalidate();
+                        Application.DoEvents();
+
                         await Task.Delay(TimeSpan.FromMilliseconds(delay), cancellationTokenSource.Token);
                         if (MouseButtons != MouseButtons.None && ClientRectangle.Contains(mousePosition))
                         {
                             if (steps > 1)
                             {
-                                deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - 1));
-                                deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - 1));
-                                deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - 1));
+                                deltaR = (int)Math.Round((_hoverColor.R - _fillColor.R) / (double)(steps - 1));
+                                deltaG = (int)Math.Round((_hoverColor.G - _fillColor.G) / (double)(steps - 1));
+                                deltaB = (int)Math.Round((_hoverColor.B - _fillColor.B) / (double)(steps - 1));
+                                deltaA = (int)Math.Round((_hoverColor.A - _fillColor.A) / (double)(steps - 1));
                             }
                         }
                     }
 
-                    deltaR = (int)Math.Round((originalOriginalColor.R - originalColor.R) / (double)steps);
-                    deltaG = (int)Math.Round((originalOriginalColor.G - originalColor.G) / (double)steps);
-                    deltaB = (int)Math.Round((originalOriginalColor.B - originalColor.B) / (double)steps);
+                    deltaR = (int)Math.Round((currentColor.R - _fillColor.R) / (double)steps);
+                    deltaG = (int)Math.Round((currentColor.G - _fillColor.G) / (double)steps);
+                    deltaB = (int)Math.Round((currentColor.B - _fillColor.B) / (double)steps);
+                    deltaA = (int)Math.Round((currentColor.A - _fillColor.A) / (double)steps);
 
                     for (int i = 1; i <= steps; i++)
                     {
                         if (!hovering)
                         {
-                            originalColor = originalOriginalColor;
+                            _fillColor = currentColor;
                             break;
-     
-
                         }
 
                         if (ClientRectangle.Contains(mousePosition))
                         {
-                            int newR = originalColor.R + deltaR;
-                            int newG = originalColor.G + deltaG;
-                            int newB = originalColor.B + deltaB;
+                            int newR = _fillColor.R + deltaR;
+                            int newG = _fillColor.G + deltaG;
+                            int newB = _fillColor.B + deltaB;
+                            int newA = _fillColor.A + deltaA;
 
-                            originalColor = Color.FromArgb(newR, newG, newB); Invalidate();
+                            _fillColor = Color.FromArgb(newA, newR, newG, newB);
+                            Invalidate();
+
                             try
                             {
                                 if (cancellationTokenSource != null && cancellationTokenSource.Token != null && !cancellationTokenSource.IsCancellationRequested)
@@ -198,9 +227,10 @@ namespace FourUI
 
                             if (i != steps)
                             {
-                                deltaR = (int)Math.Round((backColor2.R - originalColor.R) / (double)(steps - i));
-                                deltaG = (int)Math.Round((backColor2.G - originalColor.G) / (double)(steps - i));
-                                deltaB = (int)Math.Round((backColor2.B - originalColor.B) / (double)(steps - i));
+                                deltaR = (int)Math.Round((_hoverColor.R - _fillColor.R) / (double)(steps - i));
+                                deltaG = (int)Math.Round((_hoverColor.G - _fillColor.G) / (double)(steps - i));
+                                deltaB = (int)Math.Round((_hoverColor.B - _fillColor.B) / (double)(steps - i));
+                                deltaA = (int)Math.Round((_hoverColor.A - _fillColor.A) / (double)(steps - i));
                             }
                         }
                         else
@@ -211,9 +241,10 @@ namespace FourUI
 
                     if (!hovering)
                     {
-                        originalColor = originalOriginalColor;
+                        _fillColor = currentColor;
                     }
-                        Invalidate();
+
+                    Invalidate();
                 }
                 catch
                 {
@@ -223,21 +254,23 @@ namespace FourUI
             {
                 Checked = !Checked;
             }
-         
         }
+
 
         bool hovering = false;
 
         private void MouseLeaveEvent(object sender, EventArgs e)
         {
-            originalColor = originalOriginalColor;
+            _fillColor = currentColor;
+            currentBorderColor = _UnfocusedborderColor;
             Invalidate();
             hovering = false;
         }
 
         private void MouseEnterEvent(object sender, EventArgs e)
         {
-            originalColor = backColor2;
+            _fillColor = _hoverColor;
+            currentBorderColor = _FocusedborderColor;
             Invalidate();
             hovering = true;
         }
@@ -353,6 +386,11 @@ namespace FourUI
                 displaySize = new Size(Width - 10, Height - 10);
             }
 
+            if (currentBorderColor == null || currentBorderColor == Color.Empty)
+            {
+                currentBorderColor = _UnfocusedborderColor;
+            }
+
             imageX += ImageOffset.X;
 
 
@@ -382,19 +420,14 @@ namespace FourUI
                     pevent.Graphics.DrawPath(borderPen, path);
                 }
 
-                if (DesignChoice == designchoice.Filled)
+                using (SolidBrush brush = new SolidBrush(CheckedFillColor))
                 {
-                    using (SolidBrush brush = new SolidBrush(CheckedFillColor))
-                    {
-                        pevent.Graphics.FillPath(brush, path);
-                    }
+                    pevent.Graphics.FillPath(brush, path);
                 }
-                else
+
+                using (Pen pen = new Pen(FocusedBorderColor, BorderWidth))
                 {
-                    using (Pen pen = new Pen(CheckedFillColor, 1.1f))
-                    {
-                        pevent.Graphics.DrawPath(pen, path);
-                    }
+                    pevent.Graphics.DrawPath(pen, path);
                 }
 
                 TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
@@ -431,19 +464,15 @@ namespace FourUI
                     pevent.Graphics.DrawPath(borderPen, path);
                 }
 
-                if (DesignChoice == designchoice.Filled)
+
+                using (SolidBrush brush = new SolidBrush(_fillColor))
                 {
-                    using (SolidBrush brush = new SolidBrush(originalColor))
-                    {
-                        pevent.Graphics.FillPath(brush, path);
-                    }
+                    pevent.Graphics.FillPath(brush, path);
                 }
-                else
+
+                using (Pen pen = new Pen(currentBorderColor, BorderWidth))
                 {
-                    using (Pen pen = new Pen(originalColor, 1.1f))
-                    {
-                        pevent.Graphics.DrawPath(pen, path);
-                    }
+                    pevent.Graphics.DrawPath(pen, path);
                 }
 
                 TextFormatFlags flag = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
@@ -453,12 +482,21 @@ namespace FourUI
                     pevent.Graphics.DrawImage(ButtonImage, new Rectangle(new Point(imageX, ImageOffset.Y + (Height - displaySize.Height) / 2), displaySize));
                 }
 
+                int xoffset = TextOffset.X;
+                int yoffset = TextOffset.Y;
 
-                TextRenderer.DrawText(pevent.Graphics, Text, Font, rect, ForeColor,
+                Rectangle textrect = rect;
+                textrect.Offset(xoffset, yoffset);
+
+                TextRenderer.DrawText(pevent.Graphics, Text, Font, textrect, ForeColor,
 
     flag);
             }
         }
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        public Point TextOffset { get; set; } = new Point(0, 0);
 
         private ButtonModeEnum _buttonmode { get; set; } = ButtonModeEnum.Default;
 

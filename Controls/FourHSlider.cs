@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Threading;
 using System.Windows.Forms;
 
-public class FourSlider : Control
+public class FourHSlider : Control
 {
     private int value = 0;
     private int minimum = 0;
@@ -36,14 +36,14 @@ public class FourSlider : Control
 
     public event EventHandler ValueChanged;
 
-    public FourSlider()
+    public FourHSlider()
     {
         this.Size = new Size(200, 30);
         this.DoubleBuffered = true;
 
-        this.MouseDown += CustomMetroSlider_MouseDown;
-        this.MouseUp += CustomMetroSlider_MouseUp;
-        this.MouseMove += CustomMetroSlider_MouseMove;
+        this.MouseDown += _MouseDown;
+        this.MouseUp += _MouseUp;
+        this.MouseMove += _MouseMove;
     }
 
     public int Value
@@ -141,23 +141,7 @@ public class FourSlider : Control
         }
     }
 
-
-
-
-
-
-    public void Wait(int time)
-    {
-        Thread thread = new Thread(delegate ()
-        {
-            System.Threading.Thread.Sleep(time);
-        });
-        thread.Start();
-        while (thread.IsAlive)
-            Application.DoEvents();
-    }
-
-    private void CustomMetroSlider_MouseDown(object sender, MouseEventArgs e)
+    private void _MouseDown(object sender, MouseEventArgs e)
     {
         int thumbSize = 20;
         RectangleF thumbRect = new RectangleF((float)((value - minimum) / (double)(maximum - minimum)) * (Width - thumbSize), (Height - thumbSize) / 2, thumbSize, thumbSize);
@@ -173,12 +157,12 @@ public class FourSlider : Control
         }
     }
 
-    private void CustomMetroSlider_MouseUp(object sender, MouseEventArgs e)
+    private void _MouseUp(object sender, MouseEventArgs e)
     {
         isDragging = false;
     }
 
-    private void CustomMetroSlider_MouseMove(object sender, MouseEventArgs e)
+    private void _MouseMove(object sender, MouseEventArgs e)
     {
         int thumbSize = 20;
         if (isDragging)

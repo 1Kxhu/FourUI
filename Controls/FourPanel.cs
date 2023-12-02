@@ -9,19 +9,20 @@ namespace FourUI
     public partial class FourPanel : Control
     {
         private int cornerRadius = 5;
-        private Color panelColor = Color.FromArgb(32, 32, 32);
+        private Color panelColor = Color.FromArgb(10, 10, 10);
+        private Color borderColor = Color.FromArgb(45, 45, 45);
         private int borderWidth = 2;
 
 
         [Browsable(true)]
-        [Category("Appearance")]
+        [Category("FourUI")]
         [Description("The radius of the rounded corners.")]
         public int CornerRadius
         {
             get { return cornerRadius; }
             set
             {
-                if (value == 0)                                                                                                                            
+                if (value == 0)
                 {
                     value = 1;
                 }
@@ -31,7 +32,7 @@ namespace FourUI
         }
 
         [Browsable(true)]
-        [Category("Appearance")]
+        [Category("FourUI")]
         [Description("The color of the panel.")]
         public Color PanelColor
         {
@@ -40,6 +41,34 @@ namespace FourUI
             {
 
                 panelColor = value;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The color of the border.")]
+        public Color BorderColor
+        {
+            get { return borderColor; }
+            set
+            {
+
+                borderColor = value;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("The thickness of the border.")]
+        public int BorderWidth
+        {
+            get { return borderWidth; }
+            set
+            {
+
+                borderWidth = value;
                 Invalidate();
             }
         }
@@ -60,42 +89,54 @@ namespace FourUI
             SetStyle(ControlStyles.ResizeRedraw, true);
         }
 
+        [Browsable(true)]
+        [Category("FourUI")]
+        [Description("Controls the opacity of the panel. (paints over with opaque backcolor)")]
+        public int Opacity
+        {
+            get => _opacity;
+            set
+            {
+                _opacity = Math.Max(0, Math.Min(100, value));
+            }
+        }
+
+        private int _opacity = 0;
+
+
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            int arcSize = cornerRadius * 2;
+            Rectangle rawrect = e.ClipRectangle;
+            rawrect.Inflate(-1, -1);
 
-            Rectangle outerRect = new Rectangle(0 - 2, 0 - 3, Width + 4, Height - 1);
-            Rectangle innerRect = new Rectangle(borderWidth - 1, borderWidth - 1, Width - borderWidth * 2 + 2, Height - borderWidth * 2 + 2);
+            GraphicsPath roundrect = RoundedRectangle(rawrect, cornerRadius);
 
-            using (GraphicsPath outerPath = new GraphicsPath())
-            using (GraphicsPath innerPath = new GraphicsPath())
-            using (Pen borderPen = new Pen(panelColor, borderWidth))
+            Pen borderpen = new Pen(borderColor);
+            SolidBrush fillbrush = new SolidBrush(panelColor);
+
+            g.FillPath(fillbrush, roundrect);
+            g.DrawPath(borderpen, roundrect);
+
+            Color semiTransparentColor = Color.FromArgb((int)(Opacity * 2.55), this.BackColor);
+
+            using (SolidBrush semiTransparentBrush = new SolidBrush(semiTransparentColor))
             {
-                outerPath.AddArc(outerRect.X, outerRect.Y, arcSize, arcSize, 180, 90);
-                outerPath.AddArc(outerRect.Width - arcSize, outerRect.Y, arcSize, arcSize, 270, 90);
-                outerPath.AddArc(outerRect.Width - arcSize, outerRect.Height - arcSize, arcSize, arcSize, 0, 90);
-                outerPath.AddArc(outerRect.X, outerRect.Height - arcSize, arcSize, arcSize, 90, 90);
-                outerPath.CloseFigure();
-
-                innerPath.AddArc(innerRect.X, innerRect.Y, arcSize, arcSize, 180, 90);
-                innerPath.AddArc(innerRect.Width - arcSize, innerRect.Y, arcSize, arcSize, 270, 90);
-                innerPath.AddArc(innerRect.Width - arcSize, innerRect.Height - arcSize, arcSize, arcSize, 0, 90);
-                innerPath.AddArc(innerRect.X, innerRect.Height - arcSize, arcSize, arcSize, 90, 90);
-                innerPath.CloseFigure();
-
-                using (Brush brush = new SolidBrush(panelColor))
-                {
-                    g.FillPath(brush, innerPath);
-                    g.FillPath(Brushes.Transparent, outerPath);
-                }
-
-                g.DrawPath(borderPen, innerPath);
+                e.Graphics.FillRectangle(semiTransparentBrush, this.ClientRectangle);
             }
         }
 
+        private GraphicsPath RoundedRectangle(Rectangle rect, int radius)
+        {
+            GraphicsPath path = new GraphicsPath();
+
+            path.AddArc(rect.X, rect.Y, radius * 2, radius * 2, 180, 90); path.AddArc(rect.Right - 2 * radius, rect.Y, radius * 2, radius * 2, 270, 90); path.AddArc(rect.Right - 2 * radius, rect.Bottom - 2 * radius, radius * 2, radius * 2, 0, 90); path.AddArc(rect.X, rect.Bottom - 2 * radius, radius * 2, radius * 2, 90, 90);
+            path.CloseFigure();
+
+            return path;
+        }
 
         protected override void OnResize(EventArgs e)
         {

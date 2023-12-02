@@ -33,6 +33,9 @@
   <PropertyGroup>
     <NuGetPackExe>nuget.exe</NuGetPackExe>
   </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
   <Target Name="Pack">
     <PropertyGroup>
       <OutputPath>bin\$(Configuration)</OutputPath>
@@ -66,13 +69,22 @@
     <Compile Include="Components\FourBorder.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FourComboBox.cs">
+    <Compile Include="Components\FourColorDialogWrapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\FourColorDialogWrapper.Designer.cs">
+      <DependentUpon>FourColorDialogWrapper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FourListBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FourLabel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FourPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FourVSlider.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FourSpinner.cs">
@@ -84,7 +96,7 @@
     <Compile Include="Controls\FourStarRating.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FourSlider.cs">
+    <Compile Include="Controls\FourHSlider.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\FourSwitch.cs">
@@ -120,6 +132,13 @@
     <Compile Include="Controls\FourPanel.Designer.cs">
       <DependentUpon>FourPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FourColorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FourColorDialog.Designer.cs">
+      <DependentUpon>FourColorDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Components\FourDrag.cs">
       <SubType>Component</SubType>
@@ -140,6 +159,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\FourColorDialog.resx">
+      <DependentUpon>FourColorDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -158,6 +180,13 @@
     <PackageReference Include="SkiaSharp.Views">
       <Version>2.88.6</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FourUI.Winforms.nuspec" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
