@@ -202,7 +202,6 @@ public class FourListBox : ListBox
                     g.DrawString(itemText, Font, textBrush, itemRect.X + 6, yCenterString);
                 }
             }
-
         }
     }
 
