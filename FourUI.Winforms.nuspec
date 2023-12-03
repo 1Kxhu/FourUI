@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>FourUI.Winforms</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <authors>itzkxhu</authors>
     <description>A Modern Winforms UI Framework, that follows latest design trends.</description>
   </metadata>
