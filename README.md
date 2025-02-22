@@ -1,9 +1,12 @@
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Logo](https://i.imgur.com/Ui14t6x.png)](https://github.com/1Kxhu/FourUI)
+> [!CAUTION]
+> # THIS CODEBASE IS ARCHIVED / OBSOLETE
+> The successor is [CuoreUI](https://github.com/1Kxhu/CuoreUI)
+> which is far better in performance and visuals.
+> ### It is also under the Unlicense
 
+[![License](https://img.shields.io/badge/license-Unlicense-purple.svg)](https://opensource.org/licenses/MIT)
 
-# FourUI
-
+# About FourUI
 FourUI aims to recreate the smoothness of WPF by applying various tricks and workarounds.
 
 # Key Features
